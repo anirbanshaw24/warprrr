@@ -170,8 +170,8 @@ It supports multiple file formats, fast caching, robust configuration, and preci
 <span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, val <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"test.csv"</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">df1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_data.html">read_data</a></span><span class="op">(</span><span class="st">"test.csv"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="va">df2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_data.html">read_data</a></span><span class="op">(</span><span class="st">"test.csv"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">df1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_data.html">read_data</a></span><span class="op">(</span><span class="st">"test.csv"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
+<span><span class="va">df2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_data.html">read_data</a></span><span class="op">(</span><span class="st">"test.csv"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="advanced-usage">Advanced Usage<a class="anchor" aria-label="anchor" href="#advanced-usage"></a>
@@ -180,19 +180,19 @@ It supports multiple file formats, fast caching, robust configuration, and preci
 <h3 id="pass-options-to-readers">Pass Options to Readers<a class="anchor" aria-label="anchor" href="#pass-options-to-readers"></a>
 </h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">df_small</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_data.html">read_data</a></span><span class="op">(</span><span class="st">"huge.csv"</span>, nrows <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">df_small</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_data.html">read_data</a></span><span class="op">(</span><span class="st">"huge.csv"</span>, nrows <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="custom-cache-path">Custom Cache Path<a class="anchor" aria-label="anchor" href="#custom-cache-path"></a>
 </h3>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_data.html">read_data</a></span><span class="op">(</span><span class="st">"file.csv"</span>, cache_path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_data.html">read_data</a></span><span class="op">(</span><span class="st">"file.csv"</span>, cache_path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="timing-reads">Timing Reads<a class="anchor" aria-label="anchor" href="#timing-reads"></a>
 </h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">timing</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/time_taken_precise.html">time_taken_precise</a></span><span class="op">(</span><span class="op">{</span> <span class="fu"><a href="reference/read_data.html">read_data</a></span><span class="op">(</span><span class="st">"test.csv"</span><span class="op">)</span> <span class="op">}</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">timing</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/time_taken_precise.html">time_taken_precise</a></span><span class="op">(</span><span class="op">{</span> <span class="fu"><a href="reference/read_data.html">read_data</a></span><span class="op">(</span><span class="st">"test.csv"</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">}</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">timing</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
@@ -201,7 +201,7 @@ It supports multiple file formats, fast caching, robust configuration, and preci
 </h2>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"study1.csv"</span>, <span class="st">"study2.parquet"</span>, <span class="st">"study3.sas7bdat"</span><span class="op">)</span></span>
-<span><span class="va">result_list</span> <span class="op">&lt;-</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">files</span>, <span class="op">~</span><span class="fu"><a href="reference/read_data.html">read_data</a></span><span class="op">(</span><span class="va">.x</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">result_list</span> <span class="op">&lt;-</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">files</span>, <span class="op">~</span><span class="fu"><a href="reference/read_data.html">read_data</a></span><span class="op">(</span><span class="va">.x</span><span class="op">)</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="parallel-background-ingestion">Parallel Background Ingestion<a class="anchor" aria-label="anchor" href="#parallel-background-ingestion"></a>

@@ -11,36 +11,36 @@ testthat::describe("read_data()", {
     val = sample(c("A", "B", "C"), n, replace = TRUE)
   )
 
-  haven::write_sas(dat, temp_sas)
+  suppressWarnings(haven::write_sas(dat, temp_sas))
   arrow::write_parquet(dat, temp_parquet)
   arrow::write_feather(dat, temp_feather)
 
   it("reads a csv file as data.frame", {
-    x <- read_data(temp_sas)
+    x <- read_data(temp_sas)$data
     testthat::expect_s3_class(x, "data.frame")
     testthat::expect_equal(nrow(x), 10000000.0)
   })
 
   it("passes arguments to fread (nrows)", {
-    x <- read_data(temp_sas, n_max = 2)
+    x <- read_data(temp_sas, n_max = 2)$data
     testthat::expect_equal(nrow(x), 2)
   })
 
   it("reads a parquet file", {
-    x <- read_data(temp_parquet)
+    x <- read_data(temp_parquet)$data
     testthat::expect_s3_class(x, "data.frame")
     testthat::expect_equal(nrow(x), 10000000.0)
   })
 
   it("reads a feather file", {
-    x <- read_data(temp_feather)
+    x <- read_data(temp_feather)$data
     testthat::expect_s3_class(x, "data.frame")
     testthat::expect_equal(nrow(x), 10000000.0)
   })
 
   it("returns error for missing file", {
     testthat::expect_error(
-      read_data("missing_file.csv"),
+      read_data("missing_file.csv")$data,
       "MUST be a valid path"
     )
   })
@@ -49,12 +49,12 @@ testthat::describe("read_data()", {
     cache_dir <- tempfile()
     fs::dir_create(cache_dir)
     time_without_cache <- system.time(
-      x1 <- read_data(temp_sas, cache_path = cache_dir)
+      x1 <- read_data(temp_sas, cache_path = cache_dir)$data
     )
     time_without_cache <- time_without_cache[["elapsed"]]
     # Delete original file to test cache retrieval
     time_with_cache <- system.time(
-      x2 <- read_data(temp_sas, cache_path = cache_dir)
+      x2 <- read_data(temp_sas, cache_path = cache_dir)$data
     )
     time_with_cache <- time_with_cache[["elapsed"]]
 

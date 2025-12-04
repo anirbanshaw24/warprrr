@@ -12,7 +12,9 @@
 #' @param verbose Whether to print logs, time taken to read non-cached vs
 #'  cached data etc.
 #'
-#' @return An object of class data.frame.
+#' @return A named list of the form: list(data = data, warprrr = warprrr_class).
+#'  warprrr class can be used to observe or use the properties of this instance
+#'   of warprrr.
 #' @export
 #'
 read_data <- function(
@@ -24,6 +26,9 @@ read_data <- function(
     cache_path = cache_path,
     read_fun_args = read_fun_args
   )
-  warpr |>
-    get_data(verbose = verbose)
+  list(
+    data = warpr |>
+      get_data(verbose = verbose),
+    warprrr = warpr
+  )
 }

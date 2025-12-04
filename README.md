@@ -74,8 +74,8 @@ library(warprrr)
 dat <- data.frame(id = 1:3, val = c("A", "B", "C"))
 utils::write.csv(dat, "test.csv", row.names = FALSE)
 
-df1 <- read_data("test.csv", verbose = TRUE)
-df2 <- read_data("test.csv", verbose = TRUE)
+df1 <- read_data("test.csv", verbose = TRUE)$data
+df2 <- read_data("test.csv", verbose = TRUE)$data
 ```
 
 ## Advanced Usage
@@ -83,19 +83,19 @@ df2 <- read_data("test.csv", verbose = TRUE)
 ### Pass Options to Readers
 
 ``` r
-df_small <- read_data("huge.csv", nrows = 100)
+df_small <- read_data("huge.csv", nrows = 100)$data
 ```
 
 ### Custom Cache Path
 
 ``` r
-df <- read_data("file.csv", cache_path = tempdir())
+df <- read_data("file.csv", cache_path = tempdir())$data
 ```
 
 ### Timing Reads
 
 ``` r
-timing <- time_taken_precise({ read_data("test.csv") })
+timing <- time_taken_precise({ read_data("test.csv")$data })
 print(timing)
 ```
 
@@ -103,7 +103,7 @@ print(timing)
 
 ``` r
 files <- c("study1.csv", "study2.parquet", "study3.sas7bdat")
-result_list <- purrr::map(files, ~read_data(.x))
+result_list <- purrr::map(files, ~read_data(.x)$data)
 ```
 
 ## Parallel Background Ingestion

@@ -27,7 +27,9 @@ are read with arrow::read_parquet and arrow::read_feather respectively.
 Arguments can be passed to these functions via this argument.}
 }
 \value{
-An object of class data.frame.
+A named list of the form: list(data = data, warprrr = warprrr_class).
+warprrr class can be used to observe or use the properties of this instance
+of warprrr.
 }
 \description{
 Title

@@ -1,0 +1,134 @@
+---
+title: "Simple Example: warprrr"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Simple Example: warprrr}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(warprrr)
+library(fs)
+library(testthat)
+```
+
+## Introduction
+
+The `warprrr` package provides a caching layer for data files of various formats such as CSV, Parquet, and SAS. It ensures reproducible access to data while maintaining file integrity and efficient caching.
+
+This vignette demonstrates **basic usage**, showing how to create a `warprrr` object, manage caches, and perform some checks.
+
+## Creating a warprrr Object
+
+```{r create-object}
+# Create temporary directories and files for demonstration
+cache_dir <- tempfile()
+dir_create(cache_dir)
+temp_csv <- tempfile(fileext = ".csv")
+
+# Save example data
+write.csv(mtcars, temp_csv, row.names = FALSE)
+
+# Initialize warprrr object
+dc <- read_data(data_path = temp_csv, cache_path = cache_dir)
+dc
+```
+
+### Checking Cache Directory
+
+```{r cache-check}
+# The cache directory should exist
+fs::dir_exists(dc$warprrr@cache_path)
+```
+
+### File Info
+
+```{r file-info}
+# Get metadata about the source file
+dc$warprrr@file_info
+```
+
+## Accessing the Data Object
+
+```{r view-data}
+# Read the underlying data as data.table
+obj <- dc$data
+head(obj)
+```
+
+```{r read-data}
+# Read the underlying data as data.table
+obj <- dc$warprrr@data_object
+head(obj)
+```
+
+### Using get_data()
+
+```{r get-data-example}
+# Use get_data() for caching workflow
+cached_data <- warprrr:::get_data(dc$warprrr, verbose = FALSE)
+cached_data
+```
+
+## Cache Hash and Cache File
+
+```{r cache-hash}
+# Unique hash based on the file content
+dc$warprrr@cache_hash
+
+# Cached file path
+dc$warprrr@cache_full_file_path
+```
+
+## Handling Multiple Formats
+
+`warprrr` supports CSV, Parquet, and SAS7BDAT (if `haven` is installed).
+
+```{r parquet-example, eval = FALSE}
+# Example: reading parquet files
+temp_parquet <- tempfile(fileext = ".parquet")
+arrow::write_parquet(mtcars, temp_parquet)
+dc_parquet <- read_data(data_path = temp_parquet)
+head(dc_parquet$data)
+```
+
+## Error Handling
+
+```{r error-example}
+# Unsupported file format
+temp_file_unsupported <- tempfile(fileext = ".tar")
+writeLines("Unsupported file format", temp_file_unsupported)
+
+expect_error(
+  dc_error <- read_data(data_path = temp_file_unsupported),
+  "tar files are not supported"
+)
+```
+
+## Cleanup
+
+```{r cleanup, include = FALSE}
+fs::dir_delete(cache_dir)
+fs::file_delete(temp_csv)
+fs::file_delete(temp_file_unsupported)
+```
+
+## Conclusion
+
+This vignette illustrated:
+- Creating a `warprrr` object
+- Reading and caching data
+- Inspecting file metadata
+- Handling multiple formats
+- Using utility functions
+
+`warprrr` simplifies **reproducible data management** while ensuring cache integrity and efficiency.
+
