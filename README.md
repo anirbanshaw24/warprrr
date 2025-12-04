@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# warprrr ⏲️ <a href="https://anirbanshaw24.github.io/warprrr/"><img src="man/figures/logo.png" align="right" height="138" /></a>
+# warprrr ⚡<a href="https://anirbanshaw24.github.io/warprrr/"><img src="man/figures/logo.png" align="right" height="138" /></a>
 
 <!-- badges: start -->
 
@@ -14,103 +14,117 @@ coverage](https://github.com/anirbanshaw24/warprrr/actions/workflows/test-covera
 [![Codecov](https://codecov.io/gh/anirbanshaw24/warprrr/graph/badge.svg?token=JUTW42674L)](https://app.codecov.io/gh/anirbanshaw24/warprrr)
 <!-- badges: end -->
 
-## Elegant S7-based parallel job orchestration for R
+## Overview
 
-{warprrr} provides a clean, modern interface for running background
-parallel jobs using S7 classes, mirai daemon(s), and callr process
-management. Perfect for computationally intensive workflows that need
-robust error handling and progress monitoring.
+**warprrr** streamlines data import, validation, and caching workflows
+in R by leveraging S7 classes and high-performance libraries (**arrow**,
+**data.table**, **haven**).  
+It supports multiple file formats, fast caching, robust configuration,
+and precise timing—making it ideal for large-scale or clinical data
+workflows.
 
-## Features
+## Key Features
 
-- S7 Class System: Type-safe, modern R object system
-- Parallel Processing: Efficient daemon-based parallelization via mirai
-- Background Execution: Non-blocking job execution with callr::r_bg
-- Error Resilience: Built-in tryCatch error handling per job
-- Progress Monitoring: Console spinner with live status updates
-- Flexible Configuration: Customizable daemon count and cleanup options
-- Clean API: Intuitive print(), summary(), and
-  run_jobs(wait_for_results) methods
+- **Unified Data Import**: Read CSV, TSV, PSV, TXT, Parquet, Feather,
+  SAS XPT/sas7bdat formats with a consistent API.
+- **Smart Caching**: Automatic feather-format caching for rapid
+  re-reads.
+- **Flexible Backend**: Forwards arguments to backend readers such as
+  `fread`, `arrow`, `haven`.
+- **File Integrity & Validation**: Validates file existence and
+  writability before read.
+- **Precise Timing & Verbosity**: Detailed logging and timing.
+- **Modern R6/S7 Architecture**: Fully S7-powered for extensibility.
+- **Clinical-Grade Reliability**: Built for high-volume reporting and
+  multi-format ingestion.
+
+## Supported File Formats
+
+| Format  | Extension | Reader Function     |
+|---------|-----------|---------------------|
+| CSV     | .csv      | data.table::fread   |
+| TSV     | .tsv      | data.table::fread   |
+| PSV     | .psv      | data.table::fread   |
+| TXT     | .txt      | data.table::fread   |
+| Parquet | .parquet  | arrow::read_parquet |
+| Feather | .feather  | arrow::read_feather |
+| SAS     | .sas7bdat | haven::read_sas     |
+| SAS XPT | .xpt      | haven::read_xpt     |
+
+Custom read arguments are forwarded automatically via `...` or
+`read_fun_args`.
 
 ## Installation
-
-You can install the development version of warprrr from
-[CRAN](https://CRAN.R-project.org/package=warprrr) with:
 
 ``` r
 install.packages("warprrr")
 ```
 
+Development version:
+
+``` r
+remotes::install_github("anirbanshaw24/warprrr")
+```
+
 ## Quick Start
+
+``` r
+library(warprrr)
+
+dat <- data.frame(id = 1:3, val = c("A", "B", "C"))
+utils::write.csv(dat, "test.csv", row.names = FALSE)
+
+df1 <- read_data("test.csv", verbose = TRUE)
+df2 <- read_data("test.csv", verbose = TRUE)
+```
 
 ## Advanced Usage
 
-### Error Handling
+### Pass Options to Readers
 
-### Background Job Arguments
+``` r
+df_small <- read_data("huge.csv", nrows = 100)
+```
 
-### Asynchronous Execution
+### Custom Cache Path
 
-### Multiple Functions in Parallel and in Background
+``` r
+df <- read_data("file.csv", cache_path = tempdir())
+```
 
-You can run multiple different functions, each with their own arguments,
-in parallel background jobs using {warprrr}. Just supply a list of
-functions and a matching list of argument sets:
+### Timing Reads
 
-## Performance Tips
+``` r
+timing <- time_taken_precise({ read_data("test.csv") })
+print(timing)
+```
 
-- Optimal Daemon Count: Start with ceiling(cores / 5), adjust based on
-  workload
-- Batch Size: Group small tasks to reduce overhead
-- Memory Usage: Monitor with bg_args = list(supervise = TRUE)
-- Error Recovery: Use tryCatch in your functions for custom error
-  handling
+## Programmatic Example
 
-## Dependencies
+``` r
+files <- c("study1.csv", "study2.parquet", "study3.sas7bdat")
+result_list <- purrr::map(files, ~read_data(.x))
+```
 
-- S7: Modern object system
-- mirai: High-performance parallelization
-- callr: Background R processes
-- purrr: Functional programming toolkit
-- cli: Progress indicators
-- glue: String interpolation
+## Parallel Background Ingestion
 
-## Further Help & Documentation
-
-- For full documentation, visit the [package
-  website](https://anirbanshaw24.github.io/warprrr/)
-- API reference: [Reference
-  manual](https://anirbanshaw24.github.io/warprrr/reference/)
-- Report issues: [GitHub
-  Issues](https://github.com/anirbanshaw24/warprrr/issues)
+``` r
+jobs <- lapply(files, function(f)
+  callr::r_bg(read_data, list(data_path = f))
+)
+lapply(jobs, function(job) job$get_result())
+```
 
 ## Troubleshooting
 
-- Windows: Make sure Rtools is installed for compilation.
-- Linux/macOS: Ensure system build tools (gcc, make, pandoc) are
-  present.
-- Parallel/job failures: Check <job@results> for error output; validate
-  function arguments.
-- Session Info: Please include output of sessionInfo() in bug reports.
+- Validate file paths with `fs::file_exists()`
+- Ensure cache_path is writable
+- Check error for unsupported formats
+- Prefer Parquet/Feather for very large files
 
-## Citation
+## Further Help
 
-- To cite warprrr in publications, run:
-
-``` r
-citation("warprrr")
-#> To cite package 'warprrr' in publications use:
-#> 
-#>   Shaw A (2025). _warprrr: ToDo_. R package version 0.0.0.9000,
-#>   <https://github.com/anirbanshaw24/warprrr>.
-#> 
-#> A BibTeX entry for LaTeX users is
-#> 
-#>   @Manual{,
-#>     title = {warprrr: ToDo},
-#>     author = {Anirban Shaw},
-#>     year = {2025},
-#>     note = {R package version 0.0.0.9000},
-#>     url = {https://github.com/anirbanshaw24/warprrr},
-#>   }
-```
+- Homepage & documentation  
+- API reference  
+- Issues  
+- Citation: `citation("warprrr")`

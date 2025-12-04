@@ -14,7 +14,8 @@ warprrr(
 \item{data_path}{The path to data. csv, psv, tsv, parquet, feather, txt,
 sas7bdat, xpt file formats are supported}
 
-\item{read_fun_args}{Arguments passed onto the respective read function. csv, psv, tsv,
+\item{read_fun_args}{Arguments passed onto the respective read function.
+csv, psv, tsv,
 txt, is read with data.table::fread. sas7bdat and xpt are read with
 haven::read_sas and haven::read_xpt respectively. parquet and feather
 are read with arrow::read_parquet and arrow::read_feather respectively.

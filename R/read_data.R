@@ -9,7 +9,8 @@
 #' are read with arrow::read_parquet and arrow::read_feather respectively.
 #' Arguments can be passed to these functions via this argument.
 #' @param cache_path The path to use to store the cache.
-#' @param verbose Whether to print logs, time taken to read non-cached vs cached data etc.
+#' @param verbose Whether to print logs, time taken to read non-cached vs
+#'  cached data etc.
 #'
 #' @return An object of class data.frame.
 #' @export
@@ -17,12 +18,11 @@
 read_data <- function(
     data_path, cache_path = "~/.cache/patient_profiles/",
     verbose = FALSE, ...) {
+  read_fun_args <- list(...)
   warpr <- warprrr(
     data_path = data_path,
     cache_path = cache_path,
-    read_fun_args = list(
-      ...
-    )
+    read_fun_args = read_fun_args
   )
   warpr |>
     get_data(verbose = verbose)

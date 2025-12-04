@@ -66,129 +66,176 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header">
-<img src="logo.png" class="logo" alt=""><h1 id="warprrr-️-">warprrr ⏲️ 
-<a class="anchor" aria-label="anchor" href="#warprrr-%EF%B8%8F-"></a>
+<img src="logo.png" class="logo" alt=""><h1 id="warprrr-">warprrr ⚡
+<a class="anchor" aria-label="anchor" href="#warprrr-"></a>
 </h1>
 </div>
 <!-- badges: start -->
 
 <div class="section level2">
-<h2 id="elegant-s7-based-parallel-job-orchestration-for-r">Elegant S7-based parallel job orchestration for R<a class="anchor" aria-label="anchor" href="#elegant-s7-based-parallel-job-orchestration-for-r"></a>
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>{warprrr} provides a clean, modern interface for running background parallel jobs using S7 classes, mirai daemon(s), and callr process management. Perfect for computationally intensive workflows that need robust error handling and progress monitoring.</p>
+<p><strong>warprrr</strong> streamlines data import, validation, and caching workflows in R by leveraging S7 classes and high-performance libraries (<strong>arrow</strong>, <strong>data.table</strong>, <strong>haven</strong>).<br>
+It supports multiple file formats, fast caching, robust configuration, and precise timing—making it ideal for large-scale or clinical data workflows.</p>
 </div>
 <div class="section level2">
-<h2 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a>
+<h2 id="key-features">Key Features<a class="anchor" aria-label="anchor" href="#key-features"></a>
 </h2>
 <ul>
-<li>S7 Class System: Type-safe, modern R object system</li>
-<li>Parallel Processing: Efficient daemon-based parallelization via mirai</li>
-<li>Background Execution: Non-blocking job execution with callr::r_bg</li>
-<li>Error Resilience: Built-in tryCatch error handling per job</li>
-<li>Progress Monitoring: Console spinner with live status updates</li>
-<li>Flexible Configuration: Customizable daemon count and cleanup options</li>
-<li>Clean API: Intuitive print(), summary(), and run_jobs(wait_for_results) methods</li>
+<li>
+<strong>Unified Data Import</strong>: Read CSV, TSV, PSV, TXT, Parquet, Feather, SAS XPT/sas7bdat formats with a consistent API.</li>
+<li>
+<strong>Smart Caching</strong>: Automatic feather-format caching for rapid re-reads.</li>
+<li>
+<strong>Flexible Backend</strong>: Forwards arguments to backend readers such as <code>fread</code>, <code>arrow</code>, <code>haven</code>.</li>
+<li>
+<strong>File Integrity &amp; Validation</strong>: Validates file existence and writability before read.</li>
+<li>
+<strong>Precise Timing &amp; Verbosity</strong>: Detailed logging and timing.</li>
+<li>
+<strong>Modern R6/S7 Architecture</strong>: Fully S7-powered for extensibility.</li>
+<li>
+<strong>Clinical-Grade Reliability</strong>: Built for high-volume reporting and multi-format ingestion.</li>
 </ul>
+</div>
+<div class="section level2">
+<h2 id="supported-file-formats">Supported File Formats<a class="anchor" aria-label="anchor" href="#supported-file-formats"></a>
+</h2>
+<table class="table">
+<thead><tr class="header">
+<th>Format</th>
+<th>Extension</th>
+<th>Reader Function</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>CSV</td>
+<td>.csv</td>
+<td>data.table::fread</td>
+</tr>
+<tr class="even">
+<td>TSV</td>
+<td>.tsv</td>
+<td>data.table::fread</td>
+</tr>
+<tr class="odd">
+<td>PSV</td>
+<td>.psv</td>
+<td>data.table::fread</td>
+</tr>
+<tr class="even">
+<td>TXT</td>
+<td>.txt</td>
+<td>data.table::fread</td>
+</tr>
+<tr class="odd">
+<td>Parquet</td>
+<td>.parquet</td>
+<td>arrow::read_parquet</td>
+</tr>
+<tr class="even">
+<td>Feather</td>
+<td>.feather</td>
+<td>arrow::read_feather</td>
+</tr>
+<tr class="odd">
+<td>SAS</td>
+<td>.sas7bdat</td>
+<td>haven::read_sas</td>
+</tr>
+<tr class="even">
+<td>SAS XPT</td>
+<td>.xpt</td>
+<td>haven::read_xpt</td>
+</tr>
+</tbody>
+</table>
+<p>Custom read arguments are forwarded automatically via <code>...</code> or <code>read_fun_args</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version of warprrr from <a href="https://CRAN.R-project.org/package=warprrr" class="external-link">CRAN</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"warprrr"</span><span class="op">)</span></span></code></pre></div>
+<p>Development version:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"anirbanshaw24/warprrr"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/anirbanshaw24/warprrr">warprrr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, val <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"test.csv"</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_data.html">read_data</a></span><span class="op">(</span><span class="st">"test.csv"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">df2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_data.html">read_data</a></span><span class="op">(</span><span class="st">"test.csv"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="advanced-usage">Advanced Usage<a class="anchor" aria-label="anchor" href="#advanced-usage"></a>
 </h2>
 <div class="section level3">
-<h3 id="error-handling">Error Handling<a class="anchor" aria-label="anchor" href="#error-handling"></a>
+<h3 id="pass-options-to-readers">Pass Options to Readers<a class="anchor" aria-label="anchor" href="#pass-options-to-readers"></a>
 </h3>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df_small</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_data.html">read_data</a></span><span class="op">(</span><span class="st">"huge.csv"</span>, nrows <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="background-job-arguments">Background Job Arguments<a class="anchor" aria-label="anchor" href="#background-job-arguments"></a>
+<h3 id="custom-cache-path">Custom Cache Path<a class="anchor" aria-label="anchor" href="#custom-cache-path"></a>
 </h3>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_data.html">read_data</a></span><span class="op">(</span><span class="st">"file.csv"</span>, cache_path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="asynchronous-execution">Asynchronous Execution<a class="anchor" aria-label="anchor" href="#asynchronous-execution"></a>
+<h3 id="timing-reads">Timing Reads<a class="anchor" aria-label="anchor" href="#timing-reads"></a>
 </h3>
-</div>
-<div class="section level3">
-<h3 id="multiple-functions-in-parallel-and-in-background">Multiple Functions in Parallel and in Background<a class="anchor" aria-label="anchor" href="#multiple-functions-in-parallel-and-in-background"></a>
-</h3>
-<p>You can run multiple different functions, each with their own arguments, in parallel background jobs using {warprrr}. Just supply a list of functions and a matching list of argument sets:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">timing</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/time_taken_precise.html">time_taken_precise</a></span><span class="op">(</span><span class="op">{</span> <span class="fu"><a href="reference/read_data.html">read_data</a></span><span class="op">(</span><span class="st">"test.csv"</span><span class="op">)</span> <span class="op">}</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">timing</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
-<h2 id="performance-tips">Performance Tips<a class="anchor" aria-label="anchor" href="#performance-tips"></a>
+<h2 id="programmatic-example">Programmatic Example<a class="anchor" aria-label="anchor" href="#programmatic-example"></a>
 </h2>
-<ul>
-<li>Optimal Daemon Count: Start with ceiling(cores / 5), adjust based on workload</li>
-<li>Batch Size: Group small tasks to reduce overhead</li>
-<li>Memory Usage: Monitor with bg_args = list(supervise = TRUE)</li>
-<li>Error Recovery: Use tryCatch in your functions for custom error handling</li>
-</ul>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"study1.csv"</span>, <span class="st">"study2.parquet"</span>, <span class="st">"study3.sas7bdat"</span><span class="op">)</span></span>
+<span><span class="va">result_list</span> <span class="op">&lt;-</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">files</span>, <span class="op">~</span><span class="fu"><a href="reference/read_data.html">read_data</a></span><span class="op">(</span><span class="va">.x</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="dependencies">Dependencies<a class="anchor" aria-label="anchor" href="#dependencies"></a>
+<h2 id="parallel-background-ingestion">Parallel Background Ingestion<a class="anchor" aria-label="anchor" href="#parallel-background-ingestion"></a>
 </h2>
-<ul>
-<li>S7: Modern object system</li>
-<li>mirai: High-performance parallelization</li>
-<li>callr: Background R processes</li>
-<li>purrr: Functional programming toolkit</li>
-<li>cli: Progress indicators</li>
-<li>glue: String interpolation</li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="further-help--documentation">Further Help &amp; Documentation<a class="anchor" aria-label="anchor" href="#further-help--documentation"></a>
-</h2>
-<ul>
-<li>For full documentation, visit the <a href="https://anirbanshaw24.github.io/warprrr/" class="external-link">package website</a>
-</li>
-<li>API reference: <a href="https://anirbanshaw24.github.io/warprrr/reference/" class="external-link">Reference manual</a>
-</li>
-<li>Report issues: <a href="https://github.com/anirbanshaw24/warprrr/issues">GitHub Issues</a>
-</li>
-</ul>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">jobs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">files</span>, <span class="kw">function</span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span>
+<span>  <span class="fu">callr</span><span class="fu">::</span><span class="fu"><a href="https://callr.r-lib.org/reference/r_bg.html" class="external-link">r_bg</a></span><span class="op">(</span><span class="va">read_data</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>data_path <span class="op">=</span> <span class="va">f</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">jobs</span>, <span class="kw">function</span><span class="op">(</span><span class="va">job</span><span class="op">)</span> <span class="va">job</span><span class="op">$</span><span class="fu">get_result</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="troubleshooting">Troubleshooting<a class="anchor" aria-label="anchor" href="#troubleshooting"></a>
 </h2>
 <ul>
-<li>Windows: Make sure Rtools is installed for compilation.</li>
-<li>Linux/macOS: Ensure system build tools (gcc, make, pandoc) are present.</li>
-<li>Parallel/job failures: Check <a href="mailto:job@results" class="email">job@results</a> for error output; validate function arguments.</li>
-<li>Session Info: Please include output of sessionInfo() in bug reports.</li>
+<li>Validate file paths with <code><a href="https://fs.r-lib.org/reference/file_access.html" class="external-link">fs::file_exists()</a></code>
+</li>
+<li>Ensure cache_path is writable</li>
+<li>Check error for unsupported formats</li>
+<li>Prefer Parquet/Feather for very large files</li>
 </ul>
 </div>
 <div class="section level2">
-<h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
+<h2 id="further-help">Further Help<a class="anchor" aria-label="anchor" href="#further-help"></a>
 </h2>
 <ul>
-<li>To cite warprrr in publications, run:</li>
+<li>Homepage &amp; documentation<br>
+</li>
+<li>API reference<br>
+</li>
+<li>Issues<br>
+</li>
+<li>Citation: <code>citation("warprrr")</code>
+</li>
 </ul>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"warprrr"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; To cite package 'warprrr' in publications use:</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   Shaw A (2025). _warprrr: S7-Powered Data Import, Wrangling, and</span></span>
-<span><span class="co">#&gt;   Caching Framework_. R package version 0.1.0,</span></span>
-<span><span class="co">#&gt;   &lt;https://github.com/anirbanshaw24/warprrr&gt;.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; A BibTeX entry for LaTeX users is</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   @Manual{,</span></span>
-<span><span class="co">#&gt;     title = {warprrr: S7-Powered Data Import, Wrangling, and Caching Framework},</span></span>
-<span><span class="co">#&gt;     author = {Anirban Shaw},</span></span>
-<span><span class="co">#&gt;     year = {2025},</span></span>
-<span><span class="co">#&gt;     note = {R package version 0.1.0},</span></span>
-<span><span class="co">#&gt;     url = {https://github.com/anirbanshaw24/warprrr},</span></span>
-<span><span class="co">#&gt;   }</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">

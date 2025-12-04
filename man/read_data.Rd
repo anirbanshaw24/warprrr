@@ -17,7 +17,8 @@ sas7bdat, xpt file formats are supported}
 
 \item{cache_path}{The path to use to store the cache.}
 
-\item{verbose}{Whether to print logs, time taken to read non-cached vs cached data etc.}
+\item{verbose}{Whether to print logs, time taken to read non-cached vs
+cached data etc.}
 
 \item{...}{Arguments passed onto the respective read function. csv, psv, tsv,
 txt, is read with data.table::fread. sas7bdat and xpt are read with

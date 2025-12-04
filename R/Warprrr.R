@@ -4,15 +4,18 @@
 #'
 #' @param data_path The path to data. csv, psv, tsv, parquet, feather, txt,
 #' sas7bdat, xpt file formats are supported
-#' @param read_fun_args Arguments passed onto the respective read function. csv, psv, tsv,
+#' @param read_fun_args Arguments passed onto the respective read function.
+#'  csv, psv, tsv,
 #' txt, is read with data.table::fread. sas7bdat and xpt are read with
 #' haven::read_sas and haven::read_xpt respectively. parquet and feather
 #' are read with arrow::read_parquet and arrow::read_feather respectively.
 #' Arguments can be passed to these functions via this argument.
 #' @param cache_path The path to use to store the cache.
 #'
-#' @importFrom S7 new_class class_character new_property new_generic S7_dispatch method
-#' @importFrom fs is_dir dir_create file_access path_ext file_info path_abs file_exists
+#' @importFrom S7 new_class class_character new_property new_generic
+#'  S7_dispatch method
+#' @importFrom fs is_dir dir_create file_access path_ext file_info
+#'  path_abs file_exists
 #' @importFrom digest digest
 #' @importFrom glue glue
 #' @importFrom data.table fread
@@ -67,10 +70,10 @@ warprrr <- S7::new_class(
         ".feather"
       },
       validator = function(value) {
-        switch (
+        switch(
           value,
           ".feather" = {
-            return(NULL)
+            NULL
           },
           {
             "Cache extension must be a .feather file."
@@ -96,7 +99,7 @@ warprrr <- S7::new_class(
     ),
     data_object = S7::new_property(
       getter = function(self) {
-        switch (
+        switch(
           self@file_ext,
           csv = {
             do.call(
@@ -157,7 +160,7 @@ warprrr <- S7::new_class(
   ),
   validator = function(self) {
     if (!fs::file_exists(self@data_path)) {
-      return("@data_path MUST be a valid path to file that exists.")
+      "@data_path MUST be a valid path to file that exists."
     }
   }
 )
@@ -216,14 +219,14 @@ S7::method(get_data, list(warprrr, S7::class_logical)) <- function(
       "Reading from cache.",
       verbose = verbose
     )
-    time_taken <- time_taken_precise({
+    time_taken <- time_taken_precise({ # nolint
       data <- arrow::read_feather(warper@cache_full_file_path)
     })
     inform_glue_verbose(
       "Cached Data Read in [ {time_taken} secs ].",
       verbose = verbose
     )
-    return(data)
+    data
   } else {
     inform_glue_verbose(
       "Reading `{warper@data_path}`.",
@@ -236,7 +239,7 @@ S7::method(get_data, list(warprrr, S7::class_logical)) <- function(
       "Non-Cached Data Read in [ {time_taken} secs ].",
       verbose = verbose
     )
-    cache_time_taken <- time_taken_precise(
+    cache_time_taken <- time_taken_precise( # nolint
       arrow::write_feather(
         data, warper@cache_full_file_path
       )
@@ -245,6 +248,6 @@ S7::method(get_data, list(warprrr, S7::class_logical)) <- function(
       "Data cached in [ {cache_time_taken} secs ].",
       verbose = verbose
     )
-    return(data)
+    data
   }
 }
