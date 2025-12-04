@@ -13,6 +13,7 @@ BugReports: https://github.com/anirbanshaw24/warprrr/issues
 Depends: 
     R (>= 4.1.0)
 Imports: 
+    arrow,
     cli,
     config,
     fs,
