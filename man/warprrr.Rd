@@ -7,9 +7,20 @@
 warprrr(
   data_path = character(0),
   read_fun_args = list(),
-  cache_path = "~/.cache/patient_profiles/",
-  cache_ext = ".feather"
+  cache_path = "~/.cache/patient_profiles/"
 )
+}
+\arguments{
+\item{data_path}{The path to data. csv, psv, tsv, parquet, feather, txt,
+sas7bdat, xpt file formats are supported}
+
+\item{read_fun_args}{Arguments passed onto the respective read function. csv, psv, tsv,
+txt, is read with data.table::fread. sas7bdat and xpt are read with
+haven::read_sas and haven::read_xpt respectively. parquet and feather
+are read with arrow::read_parquet and arrow::read_feather respectively.
+Arguments can be passed to these functions via this argument.}
+
+\item{cache_path}{The path to use to store the cache.}
 }
 \description{
 Defines an S7 class for handled data loading and caching in Parquet format.

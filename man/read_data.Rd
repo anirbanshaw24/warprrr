@@ -4,11 +4,20 @@
 \alias{read_data}
 \title{Title}
 \usage{
-read_data(data_path, verbose = FALSE, ...)
+read_data(
+  data_path,
+  cache_path = "~/.cache/patient_profiles/",
+  verbose = FALSE,
+  ...
+)
 }
 \arguments{
 \item{data_path}{The path to data. csv, psv, tsv, parquet, feather, txt,
 sas7bdat, xpt file formats are supported}
+
+\item{cache_path}{The path to use to store the cache.}
+
+\item{verbose}{Whether to print logs, time taken to read non-cached vs cached data etc.}
 
 \item{...}{Arguments passed onto the respective read function. csv, psv, tsv,
 txt, is read with data.table::fread. sas7bdat and xpt are read with

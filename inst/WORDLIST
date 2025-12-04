@@ -1,7 +1,6 @@
 CMD
 Codecov
 Customizable
-Getter
 LintR
 Rtools
 ToDo
@@ -11,7 +10,9 @@ bg
 callr
 cli
 csv
+env
 fread
+func
 gcc
 mirai
 pandoc
@@ -20,7 +21,6 @@ psv
 purrr
 sas
 sessionInfo
-tibble
 tryCatch
 tsv
 xpt

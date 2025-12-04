@@ -76,14 +76,6 @@ testthat::describe("warprrr S7 class", {
     fs::file_delete(temp_csv_mod)
   })
 
-  it("validates cache_ext to be only .feather", {
-    expect_silent(warprrr(data_path = temp_csv, cache_ext = ".feather"))
-    expect_error(
-      warprrr(data_path = temp_csv, cache_ext = ".xlsx"),
-      "Cache extension must be a .feather file."
-    )
-  })
-
   it("uses .parquet as default cache_ext", {
     dc <- warprrr(data_path = temp_csv)
     expect_equal(dc@cache_ext, ".feather")

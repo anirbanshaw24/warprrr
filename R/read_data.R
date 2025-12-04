@@ -8,6 +8,8 @@
 #' haven::read_sas and haven::read_xpt respectively. parquet and feather
 #' are read with arrow::read_parquet and arrow::read_feather respectively.
 #' Arguments can be passed to these functions via this argument.
+#' @param cache_path The path to use to store the cache.
+#' @param verbose Whether to print logs, time taken to read non-cached vs cached data etc.
 #'
 #' @return An object of class data.frame.
 #' @export

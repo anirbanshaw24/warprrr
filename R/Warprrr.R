@@ -2,6 +2,15 @@
 #'
 #' Defines an S7 class for handled data loading and caching in Parquet format.
 #'
+#' @param data_path The path to data. csv, psv, tsv, parquet, feather, txt,
+#' sas7bdat, xpt file formats are supported
+#' @param read_fun_args Arguments passed onto the respective read function. csv, psv, tsv,
+#' txt, is read with data.table::fread. sas7bdat and xpt are read with
+#' haven::read_sas and haven::read_xpt respectively. parquet and feather
+#' are read with arrow::read_parquet and arrow::read_feather respectively.
+#' Arguments can be passed to these functions via this argument.
+#' @param cache_path The path to use to store the cache.
+#'
 #' @importFrom S7 new_class class_character new_property new_generic S7_dispatch method
 #' @importFrom fs is_dir dir_create file_access path_ext file_info path_abs file_exists
 #' @importFrom digest digest
@@ -54,7 +63,9 @@ warprrr <- S7::new_class(
     ),
     cache_ext = S7::new_property(
       class = S7::class_character,
-      default = ".feather",
+      getter = function(self) {
+        ".feather"
+      },
       validator = function(value) {
         switch (
           value,
@@ -183,19 +194,19 @@ inform_glue_verbose <- function(..., verbose, envir = parent.frame()) {
   if (verbose) inform_glue(..., envir = envir)
 }
 
-#' Generic Data Getter for warprrr Class
+#' Generic Data fetcher for warprrr Class
 #'
 #' Loads data from cache if available, otherwise reads source and caches result.
 #'
 #' @param warper warprrr object.
 #' @param verbose Print detailed messages if TRUE.
 #' @return Data.table, tibble, or arrow table, as appropriate.
-#' @examples
-#' # get_data(my_warprrr_object)
+#' @noRd
+#'
 #' @importFrom arrow read_feather write_feather
 #' @importFrom fs file_exists
 #' @importFrom glue glue
-#' @export
+#'
 get_data <- S7::new_generic("get_data", c("warper", "verbose"))
 S7::method(get_data, list(warprrr, S7::class_logical)) <- function(
     warper, verbose) {
