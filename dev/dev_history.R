@@ -16,7 +16,7 @@ chores <- function() {
   pkgdown::build_site_github_pages()
 }
 chores()
-
+pkgdown::build_articles()
 pkgload::load_all(
   export_all = FALSE,
   attach_testthat = FALSE

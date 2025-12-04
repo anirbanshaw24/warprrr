@@ -4,12 +4,12 @@ template:
   light-switch: true
   bslib:
     version: 5
-    fg: "#FFFFFF"
-    bg: "#020010"
-    primary: "#D000FF"
-    secondary: "#00D7FF"
-    light: "#FFD300"
-    dark: "#020010"
+    fg: "#00002C"
+    bg: "#FFE7FE"
+    primary: "#CD0078"
+    secondary: "#6C0096"
+    light: "#FFE7FE"
+    dark: "#00002C"
     success: "#A8D5BA"
     info: "#B0D7F1"
     warning: "#F7C6CE"
@@ -23,4 +23,7 @@ navbar:
  components:
    articles:
     text: Articles
+    menu:
+    - text: Simple Examples
+      href: articles/simple_example.html
 url: https://github.com/anirbanshaw24/warprrr
