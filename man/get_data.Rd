@@ -7,9 +7,9 @@
 get_data(warper, verbose, ...)
 }
 \arguments{
-\item{verbose}{Print detailed messages if TRUE.}
+\item{warper}{warprrr object.}
 
-\item{warprrr}{warprrr object.}
+\item{verbose}{Print detailed messages if TRUE.}
 }
 \value{
 Data.table, tibble, or arrow table, as appropriate.

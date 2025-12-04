@@ -16,8 +16,11 @@ Imports:
     arrow,
     cli,
     config,
+    data.table,
+    digest,
     fs,
     glue,
+    haven,
     rlang,
     S7,
     stringr

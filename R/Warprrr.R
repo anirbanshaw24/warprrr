@@ -171,8 +171,11 @@ time_taken_precise <- function(expr) {
 #' Verbose Informational Message with glue
 #'
 #' Optionally prints a glue message if verbose is TRUE.
+#'
 #' @param ... Message arguments for glue.
+#' @param envir The parent env when func is called. Required for glue to work.
 #' @param verbose Logical; print message if TRUE.
+#'
 #' @return Invisible NULL.
 #' @importFrom glue glue
 #' @export
@@ -184,7 +187,7 @@ inform_glue_verbose <- function(..., verbose, envir = parent.frame()) {
 #'
 #' Loads data from cache if available, otherwise reads source and caches result.
 #'
-#' @param warprrr warprrr object.
+#' @param warper warprrr object.
 #' @param verbose Print detailed messages if TRUE.
 #' @return Data.table, tibble, or arrow table, as appropriate.
 #' @examples

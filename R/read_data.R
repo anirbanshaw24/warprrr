@@ -12,9 +12,12 @@
 #' @return An object of class data.frame.
 #' @export
 #'
-read_data <- function(data_path, verbose = FALSE, ...) {
+read_data <- function(
+    data_path, cache_path = "~/.cache/patient_profiles/",
+    verbose = FALSE, ...) {
   warpr <- warprrr(
     data_path = data_path,
+    cache_path = cache_path,
     read_fun_args = list(
       ...
     )

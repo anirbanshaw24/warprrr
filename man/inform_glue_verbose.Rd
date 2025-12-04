@@ -10,6 +10,8 @@ inform_glue_verbose(..., verbose, envir = parent.frame())
 \item{...}{Message arguments for glue.}
 
 \item{verbose}{Logical; print message if TRUE.}
+
+\item{envir}{The parent env when func is called. Required for glue to work.}
 }
 \value{
 Invisible NULL.
