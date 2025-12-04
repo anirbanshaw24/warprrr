@@ -4,7 +4,7 @@ template:
   light-switch: true
   bslib:
     version: 5
-    fg: "#00002C"
+    fg: "#010010"
     bg: "#FFE7FE"
     primary: "#CD0078"
     secondary: "#6C0096"
