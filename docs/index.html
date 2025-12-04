@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>ToDo • warprrr</title>
+<title>S7-Powered Data Import, Wrangling, and Caching Framework • warprrr</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -18,9 +18,9 @@
 <link href="deps/Roboto_Slab-0.4.10/font.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="ToDo">
-<meta name="description" content="For more information, see &lt;https://anirbanshaw24.github.io/warprrr/&gt;.">
-<meta property="og:description" content="For more information, see &lt;https://anirbanshaw24.github.io/warprrr/&gt;.">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="S7-Powered Data Import, Wrangling, and Caching Framework">
+<meta name="description" content="Provides an extensible S7 class and utility functions for efficient and reproducible data loading, wrangling, and caching. Supports streamlined reading of common biomedical and tabular file formats (CSV, TSV, PSV, TXT, SAS XPT/sas7bdat, Parquet, Feather), with flexible argument passing to backend readers (data.table, haven, arrow). Implements automatic file/directory validation and file-type-based selection, plus transparent caching in Feather format for rapid future access. Designed to optimize clinical reporting, E2E data workflows, and reproducible analysis pipelines—especially in high-volume environments. Includes precise evaluation timing and verbose messaging for workflow monitoring. For more information, see &lt;https://anirbanshaw24.github.io/warprrr/&gt;.">
+<meta property="og:description" content="Provides an extensible S7 class and utility functions for efficient and reproducible data loading, wrangling, and caching. Supports streamlined reading of common biomedical and tabular file formats (CSV, TSV, PSV, TXT, SAS XPT/sas7bdat, Parquet, Feather), with flexible argument passing to backend readers (data.table, haven, arrow). Implements automatic file/directory validation and file-type-based selection, plus transparent caching in Feather format for rapid future access. Designed to optimize clinical reporting, E2E data workflows, and reproducible analysis pipelines—especially in high-volume environments. Includes precise evaluation timing and verbose messaging for workflow monitoring. For more information, see &lt;https://anirbanshaw24.github.io/warprrr/&gt;.">
 <meta property="og:image" content="https://github.com/anirbanshaw24/warprrr/logo.png">
 </head>
 <body>
@@ -31,7 +31,7 @@
 
     <a class="navbar-brand me-2" href="index.html">warprrr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -176,16 +176,17 @@
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"warprrr"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; To cite package 'warprrr' in publications use:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   Shaw A (2025). _warprrr: ToDo_. R package version 0.0.0.9000,</span></span>
+<span><span class="co">#&gt;   Shaw A (2025). _warprrr: S7-Powered Data Import, Wrangling, and</span></span>
+<span><span class="co">#&gt;   Caching Framework_. R package version 0.1.0,</span></span>
 <span><span class="co">#&gt;   &lt;https://github.com/anirbanshaw24/warprrr&gt;.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; A BibTeX entry for LaTeX users is</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   @Manual{,</span></span>
-<span><span class="co">#&gt;     title = {warprrr: ToDo},</span></span>
+<span><span class="co">#&gt;     title = {warprrr: S7-Powered Data Import, Wrangling, and Caching Framework},</span></span>
 <span><span class="co">#&gt;     author = {Anirban Shaw},</span></span>
 <span><span class="co">#&gt;     year = {2025},</span></span>
-<span><span class="co">#&gt;     note = {R package version 0.0.0.9000},</span></span>
+<span><span class="co">#&gt;     note = {R package version 0.1.0},</span></span>
 <span><span class="co">#&gt;     url = {https://github.com/anirbanshaw24/warprrr},</span></span>
 <span><span class="co">#&gt;   }</span></span></code></pre></div>
 </div>
