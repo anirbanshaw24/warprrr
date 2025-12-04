@@ -9,10 +9,9 @@
 #' are read with arrow::read_parquet and arrow::read_feather respectively.
 #' Arguments can be passed to these functions via this argument.
 #'
-#' @return
+#' @return An object of class data.frame.
 #' @export
 #'
-#' @examples
 read_data <- function(data_path, verbose = FALSE, ...) {
   warpr <- warprrr(
     data_path = data_path,
