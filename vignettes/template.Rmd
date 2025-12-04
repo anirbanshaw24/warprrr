@@ -1,0 +1,35 @@
+---
+title: "Title"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Overview
+
+## Setup
+
+```{r, include=TRUE}
+```
+
+### Using the package
+
+
+```{r, include=TRUE}
+```
+
+### Package Outputs
+
+```{r, include=TRUE}
+```
+
+### Notes
