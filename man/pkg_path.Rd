@@ -7,15 +7,20 @@
 pkg_path(..., allow_error = FALSE)
 }
 \arguments{
-\item{...}{Character vectors specifying file path components within the package.}
+\item{...}{Character vectors specifying file path components within
+the package.}
 
-\item{allow_error}{Logical. If \code{TRUE}, throw an error if the file is missing; otherwise, return \code{fs::path("")}.}
+\item{allow_error}{Logical. If \code{TRUE}, throw an error if the file
+is missing; otherwise, return \code{fs::path("")}.}
 }
 \value{
-An \code{fs_path} object (normalized file path) or an empty path if missing and \code{allow_error = FALSE}.
+An \code{fs_path} object (normalized file path) or an empty path
+if missing and \code{allow_error = FALSE}.
 }
 \description{
-Returns the normalized file path for a resource in the \code{cranpkgtemplate} package.
-If the file does not exist and \code{allow_error = TRUE}, an error is thrown. If \code{allow_error = FALSE},
+Returns the normalized file path for a resource in the \code{warprrr}
+package.
+If the file does not exist and \code{allow_error = TRUE}, an error is thrown.
+If \code{allow_error = FALSE},
 returns an empty \code{fs_path} object.
 }

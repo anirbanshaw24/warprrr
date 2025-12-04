@@ -24,7 +24,7 @@ args_list <- list(
   list(x = ceiling(rnorm(1) * 10), y = ceiling(rnorm(1) * 10))
 )
 
-new_baker <- cranpkgtemplate(
+new_baker <- warprrr(
   fun,
   args_list,
   n_daemons = 4

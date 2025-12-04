@@ -74,7 +74,7 @@ system.time({
 
 
 system.time({
-  new_baker <- cranpkgtemplate::cranpkgtemplate(
+  new_baker <- warprrr::warprrr(
     long_stat_calc,
     args_list = args_list,
     n_daemons = 6
@@ -83,6 +83,6 @@ system.time({
     #   stderr = "error.log"
     # )
   ) |>
-    cranpkgtemplate::run_jobs(wait_for_results = TRUE)
-  cranpkgtemplate_res <<- new_baker@results
+    warprrr::run_jobs(wait_for_results = TRUE)
+  warprrr_res <<- new_baker@results
 })

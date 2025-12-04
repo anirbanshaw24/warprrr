@@ -37,4 +37,4 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: validation/coverage.xml
-          slug: anirbanshaw24/cranpkgtemplate
+          slug: anirbanshaw24/warprrr

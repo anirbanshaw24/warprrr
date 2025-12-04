@@ -1,25 +1,25 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# cranpkgtemplate ⏲️ <a href="https://anirbanshaw24.github.io/cranpkgtemplate/"><img src="man/figures/logo.png" align="right" height="138" /></a>
+# warprrr ⏲️ <a href="https://anirbanshaw24.github.io/warprrr/"><img src="man/figures/logo.png" align="right" height="138" /></a>
 
 <!-- badges: start -->
 
-[![CRAN](https://www.r-pkg.org/badges/version/cranpkgtemplate)](https://CRAN.R-project.org/package=cranpkgtemplate)
-[![R-CMD-check](https://github.com/anirbanshaw24/cranpkgtemplate/actions/workflows/R-CMD-check.yml/badge.svg)](https://github.com/anirbanshaw24/cranpkgtemplate/actions/workflows/R-CMD-check.yml)
-[![LintR-check](https://github.com/anirbanshaw24/cranpkgtemplate/actions/workflows/lintr-check.yml/badge.svg)](https://github.com/anirbanshaw24/cranpkgtemplate/actions/workflows/lintr-check.yml)
-[![Spell-check](https://github.com/anirbanshaw24/cranpkgtemplate/actions/workflows/spell-check.yml/badge.svg)](https://github.com/anirbanshaw24/cranpkgtemplate/actions/workflows/spell-check.yml)
+[![CRAN](https://www.r-pkg.org/badges/version/warprrr)](https://CRAN.R-project.org/package=warprrr)
+[![R-CMD-check](https://github.com/anirbanshaw24/warprrr/actions/workflows/R-CMD-check.yml/badge.svg)](https://github.com/anirbanshaw24/warprrr/actions/workflows/R-CMD-check.yml)
+[![LintR-check](https://github.com/anirbanshaw24/warprrr/actions/workflows/lintr-check.yml/badge.svg)](https://github.com/anirbanshaw24/warprrr/actions/workflows/lintr-check.yml)
+[![Spell-check](https://github.com/anirbanshaw24/warprrr/actions/workflows/spell-check.yml/badge.svg)](https://github.com/anirbanshaw24/warprrr/actions/workflows/spell-check.yml)
 [![Test
-coverage](https://github.com/anirbanshaw24/cranpkgtemplate/actions/workflows/test-coverage.yml/badge.svg)](https://github.com/anirbanshaw24/cranpkgtemplate/actions/workflows/test-coverage.yml)
-[![Codecov](https://codecov.io/gh/anirbanshaw24/cranpkgtemplate/graph/badge.svg?token=JUTW42674L)](https://app.codecov.io/gh/anirbanshaw24/cranpkgtemplate)
+coverage](https://github.com/anirbanshaw24/warprrr/actions/workflows/test-coverage.yml/badge.svg)](https://github.com/anirbanshaw24/warprrr/actions/workflows/test-coverage.yml)
+[![Codecov](https://codecov.io/gh/anirbanshaw24/warprrr/graph/badge.svg?token=JUTW42674L)](https://app.codecov.io/gh/anirbanshaw24/warprrr)
 <!-- badges: end -->
 
 ## Elegant S7-based parallel job orchestration for R
 
-{cranpkgtemplate} provides a clean, modern interface for running
-background parallel jobs using S7 classes, mirai daemon(s), and callr
-process management. Perfect for computationally intensive workflows that
-need robust error handling and progress monitoring.
+{warprrr} provides a clean, modern interface for running background
+parallel jobs using S7 classes, mirai daemon(s), and callr process
+management. Perfect for computationally intensive workflows that need
+robust error handling and progress monitoring.
 
 ## Features
 
@@ -34,11 +34,11 @@ need robust error handling and progress monitoring.
 
 ## Installation
 
-You can install the development version of cranpkgtemplate from
-[CRAN](https://CRAN.R-project.org/package=cranpkgtemplate) with:
+You can install the development version of warprrr from
+[CRAN](https://CRAN.R-project.org/package=warprrr) with:
 
 ``` r
-install.packages("cranpkgtemplate")
+install.packages("warprrr")
 ```
 
 ## Quick Start
@@ -54,8 +54,8 @@ install.packages("cranpkgtemplate")
 ### Multiple Functions in Parallel and in Background
 
 You can run multiple different functions, each with their own arguments,
-in parallel background jobs using {cranpkgtemplate}. Just supply a list
-of functions and a matching list of argument sets:
+in parallel background jobs using {warprrr}. Just supply a list of
+functions and a matching list of argument sets:
 
 ## Performance Tips
 
@@ -78,11 +78,11 @@ of functions and a matching list of argument sets:
 ## Further Help & Documentation
 
 - For full documentation, visit the [package
-  website](https://anirbanshaw24.github.io/cranpkgtemplate/)
+  website](https://anirbanshaw24.github.io/warprrr/)
 - API reference: [Reference
-  manual](https://anirbanshaw24.github.io/cranpkgtemplate/reference/)
+  manual](https://anirbanshaw24.github.io/warprrr/reference/)
 - Report issues: [GitHub
-  Issues](https://github.com/anirbanshaw24/cranpkgtemplate/issues)
+  Issues](https://github.com/anirbanshaw24/warprrr/issues)
 
 ## Troubleshooting
 
@@ -95,22 +95,22 @@ of functions and a matching list of argument sets:
 
 ## Citation
 
-- To cite cranpkgtemplate in publications, run:
+- To cite warprrr in publications, run:
 
 ``` r
-citation("cranpkgtemplate")
-#> To cite package 'cranpkgtemplate' in publications use:
+citation("warprrr")
+#> To cite package 'warprrr' in publications use:
 #> 
-#>   Shaw A (2025). _cranpkgtemplate: ToDo_. R package version 0.0.0.9000,
-#>   <https://github.com/anirbanshaw24/cranpkgtemplate>.
+#>   Shaw A (2025). _warprrr: ToDo_. R package version 0.0.0.9000,
+#>   <https://github.com/anirbanshaw24/warprrr>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
 #>   @Manual{,
-#>     title = {cranpkgtemplate: ToDo},
+#>     title = {warprrr: ToDo},
 #>     author = {Anirban Shaw},
 #>     year = {2025},
 #>     note = {R package version 0.0.0.9000},
-#>     url = {https://github.com/anirbanshaw24/cranpkgtemplate},
+#>     url = {https://github.com/anirbanshaw24/warprrr},
 #>   }
 ```

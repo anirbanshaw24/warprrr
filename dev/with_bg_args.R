@@ -41,18 +41,18 @@ args_list[[5]] <- list(
 
 
 # Create and run jobs with optimal daemon count
-stirr_job <- cranpkgtemplate::cranpkgtemplate(
+stirr_job <- warprrr::warprrr(
   fun = process_data,
   args_list = args_list,
   n_daemons = min(4, length(args_list)),  # Adaptive daemon count
   bg_args = list(
-    stdout = "cranpkgtemplate_out.log",
-    stderr = "cranpkgtemplate_err.log"
+    stdout = "warprrr_out.log",
+    stderr = "warprrr_err.log"
   )
 )
 
 # Execute with real-time monitoring
 stirr_job <- stirr_job |>
-  cranpkgtemplate::run_jobs(wait_for_results = TRUE)
+  warprrr::run_jobs(wait_for_results = TRUE)
 
 stirr_job@results

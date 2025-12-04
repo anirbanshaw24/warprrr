@@ -1,7 +1,7 @@
 
 #' Generate a normalized package resource file path.
 #'
-#' Returns the normalized file path for a resource in the `cranpkgtemplate`
+#' Returns the normalized file path for a resource in the `warprrr`
 #'  package.
 #' If the file does not exist and `allow_error = TRUE`, an error is thrown.
 #'  If `allow_error = FALSE`,
@@ -18,7 +18,7 @@
 pkg_path <- function(..., allow_error = FALSE) {
   fs::path(
     system.file(
-      ..., package = "cranpkgtemplate", mustWork = allow_error
+      ..., package = "warprrr", mustWork = allow_error
     )
   )
 }
@@ -51,7 +51,7 @@ get_print_constants <- function() {
 dv_log_preffix <- function() {
   cli::col_br_cyan(
     glue::glue(
-      "\ncranpkgtemplate @ {format(Sys.time(), '%Y-%m-%d %H:%M:%S')}: "
+      "\nwarprrr @ {format(Sys.time(), '%Y-%m-%d %H:%M:%S')}: "
     )
   )
 }

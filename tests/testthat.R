@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(cranpkgtemplate)
+library(warprrr)
 
-test_check("cranpkgtemplate")
+test_check("warprrr")

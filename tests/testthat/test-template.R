@@ -1,6 +1,6 @@
 
 library(testthat)
-library(cranpkgtemplate)
+library(warprrr)
 
 describe("works as expected", {
 

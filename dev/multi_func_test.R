@@ -1,7 +1,7 @@
 
-cranpkgtemplate <- S7::new_class(
-  "cranpkgtemplate",
-  package = "cranpkgtemplate",
+warprrr <- S7::new_class(
+  "warprrr",
+  package = "warprrr",
   properties = list(
     fun = S7::class_any,       # Accepts function OR list of functions
     args_list = S7::class_list,
@@ -27,7 +27,7 @@ cranpkgtemplate <- S7::new_class(
       class = S7::class_list,
       getter = function(self) {
         if (is.null(self@bg_job_status)) {
-          glue::glue(" - cranpkgtemplate:: Job not started. Start job by calling run_jobs function.")
+          glue::glue(" - warprrr:: Job not started. Start job by calling run_jobs function.")
         } else if (
           !is.null(self@bg_job_status) &&
           !self@bg_job_status$is_alive()
