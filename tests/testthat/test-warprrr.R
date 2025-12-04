@@ -88,7 +88,7 @@ testthat::describe("warprrr S7 class", {
   })
 
   it("provides absolute cache path", {
-    dc <- warprrr(data_path = temp_csv, cache_path = temp_cache)
+    dc <- read_data(data_path = temp_csv, cache_path = temp_cache)$warprrr
     expect_true(fs::is_absolute_path(dc@cache_full_file_path))
     expect_true(grepl(temp_cache, dc@cache_full_file_path, fixed = TRUE))
   })
