@@ -11,7 +11,7 @@
 [![Spell-check](https://github.com/anirbanshaw24/warprrr/actions/workflows/spell-check.yml/badge.svg)](https://github.com/anirbanshaw24/warprrr/actions/workflows/spell-check.yml)
 [![Test
 coverage](https://github.com/anirbanshaw24/warprrr/actions/workflows/test-coverage.yml/badge.svg)](https://github.com/anirbanshaw24/warprrr/actions/workflows/test-coverage.yml)
-[![Codecov](https://codecov.io/gh/anirbanshaw24/warprrr/graph/badge.svg?token=JUTW42674L)](https://app.codecov.io/gh/anirbanshaw24/warprrr)
+[![codecov](https://codecov.io/gh/anirbanshaw24/warprrr/graph/badge.svg?token=RDPT8TWYWE)](https://codecov.io/gh/anirbanshaw24/warprrr)
 <!-- badges: end -->
 
 ## Overview
