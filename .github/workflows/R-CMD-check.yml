@@ -55,19 +55,17 @@ jobs:
           r-version: ${{ matrix.config.r }}
 
       - name: Install Arrow from P3M
-        if: matrix.config.os != 'windows-latest'
         run: |
-          R -e 'renv::install("arrow", type = "source")'
+          R -e 'install.packages("arrow", repos = c(p3m = "https://p3m.dev/cran/__linux__/manylinux_2_28/latest"))'
 
       - name: Install curl from P3M
-        if: matrix.config.os != 'windows-latest'
         run: |
-          R -e 'renv::install("curl", repos = c(p3m = "https://p3m.dev/cran/__linux__/manylinux_2_28/latest"))'
+          R -e 'install.packages("curl", repos = c(p3m = "https://p3m.dev/cran/__linux__/manylinux_2_28/latest"))'
 
       - name: Install dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          cache: false
+          cache-version: 2
           needs: check
           pak-version: 'stable'
           extra-packages: any::devtools, any::optparse, local::.
