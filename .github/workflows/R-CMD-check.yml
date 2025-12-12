@@ -56,11 +56,11 @@ jobs:
 
       - name: Install Arrow from P3M
         run: |
-          R -e 'install.packages("arrow", repos = c(p3m = "https://p3m.dev/cran/__linux__/manylinux_2_28/latest"))'
+          R -e 'renv::install("arrow", repos = c(p3m = "https://p3m.dev/cran/__linux__/manylinux_2_28/latest"))'
 
       - name: Install curl from P3M
         run: |
-          R -e 'install.packages("curl", repos = c(p3m = "https://p3m.dev/cran/__linux__/manylinux_2_28/latest"))'
+          R -e 'renv::install("curl", repos = c(p3m = "https://p3m.dev/cran/__linux__/manylinux_2_28/latest"))'
 
       - name: Install dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
