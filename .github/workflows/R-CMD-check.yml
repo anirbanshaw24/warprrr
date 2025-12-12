@@ -62,7 +62,7 @@ jobs:
 
       - name: Install Arrow from P3M
         run: |
-          R -e 'renv::install("arrow", repos = c(p3m = "https://p3m.dev/cran/__linux__/manylinux_2_28/latest"))'
+          R -e 'renv::install("arrow", type = "source")'
 
       - name: Install curl from P3M
         run: |
