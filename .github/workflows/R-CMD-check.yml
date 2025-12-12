@@ -50,6 +50,16 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
 
+      - name: Add OpenSSL 1.1 compatibility from PPA (if available)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libssl1.1 || echo "No libssl1.1, try ppa"
+
+      - name: Install Arrow from P3M
+        if: matrix.config.os == 'ubuntu-latest'
+        run: |
+          R -e 'install.packages("arrow", repos = c(p3m = "https://packagemanager.posit.co/cran/__linux__/centos8/latest"))'
+
       - name: Install dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
