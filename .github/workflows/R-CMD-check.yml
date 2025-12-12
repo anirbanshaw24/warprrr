@@ -51,9 +51,15 @@ jobs:
           r-version: ${{ matrix.config.r }}
 
       - name: Add OpenSSL 1.1 compatibility from PPA (if available)
+        if: matrix.config.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
           sudo apt-get install -y libssl1.1 || echo "No libssl1.1, try ppa"
+
+      - name: Install OpenSSL for Windows
+        if: matrix.config.os == 'windows-latest'
+        run: |
+          choco install openssl
 
       - name: Install Arrow from P3M
         if: matrix.config.os == 'ubuntu-latest'
