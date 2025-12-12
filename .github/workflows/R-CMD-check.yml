@@ -49,10 +49,11 @@ jobs:
         run: |
           brew install pandoc
 
-      - name: Set PowerShell execution policy to Bypass on Windows
+      - name: Setup PowerShell policy and run R (Windows)
         if: matrix.config.os == 'windows-latest'
         run: |
           Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
+          R -e 'renv::install("arrow")'
         shell: pwsh
 
       - name: Install R
