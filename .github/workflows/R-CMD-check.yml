@@ -60,6 +60,7 @@ jobs:
           R -e 'renv::install("arrow", type = "source")'
 
       - name: Install curl from P3M
+        if: matrix.config.os != 'windows-latest'
         run: |
           R -e 'renv::install("curl", repos = c(p3m = "https://p3m.dev/cran/__linux__/manylinux_2_28/latest"))'
 
