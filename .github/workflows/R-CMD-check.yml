@@ -34,15 +34,38 @@ jobs:
           choco install pandoc
           choco install openssl
 
-      - name: Setup Pandoc for ubuntu-latest
+
+      - name: 🧱 Install system dependencies (Pandoc, SSL, curl, text shaping)
         if: matrix.config.os == 'ubuntu-latest'
+        shell: bash
         run: |
+          set -euxo pipefail
+
           sudo apt-get update
-          sudo apt-get install libcurl4-openssl-dev
-          sudo apt-get install -y r-cran-xml
-          sudo apt-get install -y libharfbuzz-dev libfribidi-dev
-          sudo apt-get install -y libssl-dev libcurl4-openssl-dev libxml2-dev
-          sudo apt-get install -y libssl1.1 || echo "No libssl1.1, try ppa"
+
+          # Core system libraries for R packages (curl, ssl, xml)
+          sudo apt-get install -y \
+            libssl-dev \
+            libcurl4-openssl-dev \
+            libxml2-dev
+
+          # Text shaping libs (required by rmarkdown / pandoc / systemfonts)
+          sudo apt-get install -y \
+            libharfbuzz-dev \
+            libfribidi-dev
+
+          # System XML (only if explicitly required)
+          sudo apt-get install -y \
+            r-cran-xml || true
+
+          # NOTE:
+          # libssl1.1 is NOT available on ubuntu-latest (22.04+).
+          # Do NOT attempt to install it — native R packages must be rebuilt
+          # against OpenSSL 3 (libssl.so.3).
+
+      - name: 📋 Restore renv (force native rebuild)
+        run: |
+          Rscript -e "renv::restore(prompt = FALSE, rebuild = TRUE)"
 
       - name: Setup Pandoc for macOS-latest
         if: matrix.config.os == 'macOS-latest'
@@ -68,6 +91,7 @@ jobs:
           cache-version: 2
           needs: check
           pak-version: 'stable'
+          extra-packages: any::rcmdcheck, any::optparse, local::.
 
       - name: R CMD check
         uses: r-lib/actions/check-r-package@v2
