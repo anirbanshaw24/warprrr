@@ -78,6 +78,11 @@ jobs:
         run: |
           rm -rf $HOME/.cache/R/renv/*curl*
 
+      - name: 🔧 Force source builds on Linux
+        if: matrix.config.os == 'ubuntu-latest'
+        run: |
+          echo 'options(pkgType = "source")' >> ~/.Rprofile
+
       - name: 📋 Restore renv (force native rebuild)
         if: matrix.config.os != 'windows-latest'
         run: |
