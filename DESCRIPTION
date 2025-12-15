@@ -38,6 +38,7 @@ Suggests:
     covr,
     knitr,
     mockery,
+    rcmdcheck,
     rmarkdown,
     spelling,
     testthat (>= 3.0.0)
