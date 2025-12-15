@@ -74,6 +74,7 @@ jobs:
           r-version: ${{ matrix.config.r }}
 
       - name: 📋 Restore renv (force native rebuild)
+        if: matrix.config.os != 'windows-latest'
         run: |
           Rscript -e "renv::restore(prompt = FALSE, rebuild = TRUE)"
 
