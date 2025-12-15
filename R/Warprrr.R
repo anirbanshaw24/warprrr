@@ -30,7 +30,7 @@ warprrr <- S7::new_class(
     read_fun_args = S7::class_list,
     cache_path = S7::new_property(
       class = S7::class_character,
-      default = "~/.cache/patient_profiles/",
+      default = file.path(tools::R_user_dir("warprrr", which = "cache")),
       validator = function(value) {
         if (!fs::is_dir(value)) {
           fs::dir_create(value)

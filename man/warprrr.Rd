@@ -7,7 +7,7 @@
 warprrr(
   data_path = character(0),
   read_fun_args = list(),
-  cache_path = "~/.cache/patient_profiles/"
+  cache_path = "/home/shawa11/.cache/R/warprrr"
 )
 }
 \arguments{
