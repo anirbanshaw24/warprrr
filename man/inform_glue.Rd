@@ -9,7 +9,8 @@ inform_glue(..., envir = parent.frame())
 \arguments{
 \item{...}{Arguments passed to \code{glue::glue()} for formatting.}
 
-\item{envir}{Environment passed to \code{glue::glue}. Default is \code{parent.frame()}.}
+\item{envir}{Environment passed to \code{glue::glue}.
+Default is \code{parent.frame()}.}
 }
 \description{
 Uses \code{glue} for string interpolation and \code{cli} for colored output.
