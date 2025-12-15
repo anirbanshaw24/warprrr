@@ -21,6 +21,7 @@
 #' @importFrom data.table fread
 #' @importFrom haven read_sas
 #' @importFrom arrow read_parquet
+#' @export
 warprrr <- S7::new_class(
   "warprrr",
   package = "warprrr",
@@ -197,6 +198,7 @@ inform_glue_verbose <- function(..., verbose, envir = parent.frame()) {
   if (verbose) inform_glue(..., envir = envir)
 }
 
+get_data <- S7::new_generic("get_data", c("warper", "verbose"))
 #' Generic Data fetcher for warprrr Class
 #'
 #' Loads data from cache if available, otherwise reads source and caches result.
@@ -210,7 +212,7 @@ inform_glue_verbose <- function(..., verbose, envir = parent.frame()) {
 #' @importFrom fs file_exists
 #' @importFrom glue glue
 #'
-get_data <- S7::new_generic("get_data", c("warper", "verbose"))
+#' @export
 S7::method(get_data, list(warprrr, S7::class_logical)) <- function(
     warper, verbose) {
   if (fs::file_exists(warper@cache_full_file_path)) {

@@ -97,9 +97,16 @@ log_end <- function() {
   )
 }
 
-#' @importFrom glue glue
-#' @importFrom cli col_br_green
+#' Print a formatted, blue-colored glue message
 #'
+#' Uses \code{glue} for string interpolation and \code{cli} for colored output.
+#'
+#' @param ... Arguments passed to \code{glue::glue()} for formatting.
+#' @param envir Environment passed to \code{glue::glue}. Default is \code{parent.frame()}.
+#'
+#' @importFrom glue glue
+#' @importFrom cli col_br_blue
+#' @export
 inform_glue <- function(..., envir = parent.frame()) {
 
   cat(

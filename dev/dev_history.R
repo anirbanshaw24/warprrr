@@ -18,7 +18,7 @@ chores <- function() {
 chores()
 pkgdown::build_articles()
 pkgload::load_all(
-  export_all = FALSE,
+  export_all = TRUE,
   attach_testthat = FALSE
 )
 
