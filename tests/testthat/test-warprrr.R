@@ -7,8 +7,11 @@ testthat::describe("warprrr S7 class", {
   temp_file_unsupported <- tempfile(fileext = ".unsupported")
 
   # Create dummy data for files
-  write.csv(mtcars, temp_csv, row.names = FALSE)
-  arrow::write_parquet(mtcars, temp_parquet)
+  # Number of rows desired, e.g. 1 million
+  n_rows <- 1e6
+  big_df <- mtcars[rep(seq_len(nrow(mtcars)), length.out = n_rows), ]
+  write.csv(big_df, temp_csv, row.names = FALSE)
+  arrow::write_parquet(big_df, temp_parquet)
   writeLines("Unsupported file format", temp_file_unsupported)
 
   it("validates default cache_path permissions and auto-creates directory", {
@@ -23,6 +26,10 @@ testthat::describe("warprrr S7 class", {
   })
 
   it("throws error if cache_path permissions are incorrect", {
+    testthat::skip_if(
+      .Platform$OS.type == "windows",
+      "Windows does not enforce chmod directory permissions"
+    )
     temp_perm <- tempfile()
     fs::dir_create(temp_perm)
     Sys.chmod(temp_perm, mode = "0444", use_umask = FALSE)
@@ -96,7 +103,7 @@ testthat::describe("warprrr S7 class", {
     dc <- warprrr(data_path = temp_csv)
     obj <- dc@data_object
     expect_s3_class(obj, "data.table")
-    expect_identical(dim(obj), dim(mtcars))
+    expect_identical(dim(obj), dim(big_df))
   })
 
   it("reads data_object depending on extension (parquet)", {
@@ -105,7 +112,7 @@ testthat::describe("warprrr S7 class", {
       class(dc@data_object),
       c("tbl_df", "tbl", "data.frame")
     )
-    expect_identical(dim(dc@data_object), dim(mtcars))
+    expect_identical(dim(dc@data_object), dim(big_df))
   })
 
   it("errors on unsupported file extension", {
