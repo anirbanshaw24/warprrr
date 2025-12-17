@@ -201,7 +201,7 @@ time_taken_precise <- function(expr) {
 #' @importFrom glue glue
 #' @export
 inform_glue_verbose <- function(..., verbose, envir = parent.frame()) {
-  if (verbose) inform_glue(..., envir = envir)
+  if (verbose) inform_glue(..., envir = envir) # nolint
 }
 
 get_data <- S7::new_generic("get_data", c("warper", "verbose"))

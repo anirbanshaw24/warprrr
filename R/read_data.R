@@ -26,14 +26,14 @@ read_data <- function(
     cache_path = file.path(tools::R_user_dir("warprrr", which = "cache")),
     verbose = FALSE, ...) {
   read_fun_args <- list(...)
-  warpr <- warprrr(
+  warpr <- warprrr( # nolint
     data_path = data_path,
     cache_path = cache_path,
     read_fun_args = read_fun_args
   )
   list(
     data = warpr |>
-      get_data(verbose = verbose),
+      get_data(verbose = verbose), # nolint
     warprrr = warpr
   )
 }
