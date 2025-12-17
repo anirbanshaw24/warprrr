@@ -131,6 +131,9 @@ jobs:
         shell: Rscript {0}
         run: |
           source(".Rprofile")
+          print("======================================================")
+          print(list.files(fs::path(.libPaths()[1], "stringi", "libs")))
+          print("======================================================")
           devtools::document()
 
       # ===== R CMD check =====
