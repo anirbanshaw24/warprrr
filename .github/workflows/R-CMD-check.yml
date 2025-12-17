@@ -90,6 +90,7 @@ jobs:
           if (Sys.info()["sysname"] == "Linux") {
             renv::purge("curl", prompt = FALSE)
             renv::purge("openssl", prompt = FALSE)
+            renv::purge("stringi", prompt = FALSE)
             renv::restore(prompt = FALSE, rebuild = TRUE)
           } else {
             renv::restore(prompt = FALSE)
