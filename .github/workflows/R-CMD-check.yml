@@ -128,7 +128,10 @@ jobs:
 
       # ===== Document Package =====
       - name: Run devtools::document()
-        run: Rscript -e "devtools::document()"
+        shell: Rscript {0}
+        run: |
+          source(".Rprofile")
+          devtools::document()
 
       # ===== R CMD check =====
       - name: R CMD check
