@@ -53,7 +53,7 @@ jobs:
 
       - name: 🔨 Rebuild critical packages from source
         run: |
-          Rscript -e 'install.packages(c("curl", "openssl", "qpdf"),
+          Rscript -e 'install.packages(c("curl", "openssl", "qpdf", "stringi"),
           type = "source")'
 
       - name: Install package dependencies
