@@ -99,6 +99,11 @@ jobs:
         run: |
           R -e 'install.packages("curl", type = "source")'
 
+      - name: Install devtools
+        if: matrix.config.os != 'windows-latest'
+        run: |
+          R -e 'install.packages("devtools", type = "https://p3m.dev/cran/__linux__/manylinux_2_28/latest")'
+
       - name: Install dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
