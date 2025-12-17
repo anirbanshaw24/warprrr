@@ -50,7 +50,8 @@ jobs:
             libpng-dev \
             libtiff5-dev \
             libjpeg-dev \
-            libicu-dev
+            libicu-dev \
+            libicu76
 
       # ===== macOS Setup =====
       - name: Setup Pandoc (macOS)
@@ -133,6 +134,7 @@ jobs:
           source(".Rprofile")
           print("======================================================")
           print(list.files(fs::path(.libPaths()[1], "stringi", "libs")))
+          print(.libPaths()[1])
           print("======================================================")
           devtools::document()
 
