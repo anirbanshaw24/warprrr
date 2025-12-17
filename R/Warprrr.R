@@ -1,26 +1,32 @@
+
 #' warprrr S7 Class for Data Wrangling and Caching
 #'
-#' Defines an S7 class for handled data loading and caching in Parquet format.
+#' Defines an S7 class that handles data loading and on-disk caching
+#' using Parquet format where applicable.
 #'
-#' @param data_path The path to data. csv, psv, tsv, parquet, feather, txt,
-#' sas7bdat, xpt file formats are supported
-#' @param read_fun_args Arguments passed onto the respective read function.
-#'  csv, psv, tsv,
-#' txt, is read with data.table::fread. sas7bdat and xpt are read with
-#' haven::read_sas and haven::read_xpt respectively. parquet and feather
-#' are read with arrow::read_parquet and arrow::read_feather respectively.
-#' Arguments can be passed to these functions via this argument.
-#' @param cache_path The path to use to store the cache.
+#' @param data_path Path to the input data file. Supported formats include
+#'   CSV, PSV, TSV, TXT, Parquet, Feather, SAS7BDAT, and XPT.
+#'
+#' @param read_fun_args A named list of arguments passed to the underlying
+#'   reader function. CSV, PSV, TSV, and TXT files are read using
+#'   \code{data.table::fread()}. SAS7BDAT and XPT files are read using
+#'   \code{haven::read_sas()} and \code{haven::read_xpt()}, respectively.
+#'   Parquet and Feather files are read using
+#'   \code{arrow::read_parquet()} and \code{arrow::read_feather()}.
+#'
+#' @param cache_path Path to the cache directory. Defaults to
+#'   \code{tools::R_user_dir("warprrr", which = "cache")}, which resolves to
+#'   an OS-specific, user-writable cache location.
 #'
 #' @importFrom S7 new_class class_character new_property new_generic
-#'  S7_dispatch method
+#'   S7_dispatch method
 #' @importFrom fs is_dir dir_create file_access path_ext file_info
-#'  path_abs file_exists
+#'   path_abs file_exists
 #' @importFrom digest digest
 #' @importFrom glue glue
 #' @importFrom data.table fread
-#' @importFrom haven read_sas
-#' @importFrom arrow read_parquet
+#' @importFrom haven read_sas read_xpt
+#' @importFrom arrow read_parquet read_feather
 #' @export
 warprrr <- S7::new_class(
   "warprrr",

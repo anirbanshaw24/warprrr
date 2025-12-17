@@ -11,18 +11,21 @@ warprrr(
 )
 }
 \arguments{
-\item{data_path}{The path to data. csv, psv, tsv, parquet, feather, txt,
-sas7bdat, xpt file formats are supported}
+\item{data_path}{Path to the input data file. Supported formats include
+CSV, PSV, TSV, TXT, Parquet, Feather, SAS7BDAT, and XPT.}
 
-\item{read_fun_args}{Arguments passed onto the respective read function.
-csv, psv, tsv,
-txt, is read with data.table::fread. sas7bdat and xpt are read with
-haven::read_sas and haven::read_xpt respectively. parquet and feather
-are read with arrow::read_parquet and arrow::read_feather respectively.
-Arguments can be passed to these functions via this argument.}
+\item{read_fun_args}{A named list of arguments passed to the underlying
+reader function. CSV, PSV, TSV, and TXT files are read using
+\code{data.table::fread()}. SAS7BDAT and XPT files are read using
+\code{haven::read_sas()} and \code{haven::read_xpt()}, respectively.
+Parquet and Feather files are read using
+\code{arrow::read_parquet()} and \code{arrow::read_feather()}.}
 
-\item{cache_path}{The path to use to store the cache.}
+\item{cache_path}{Path to the cache directory. Defaults to
+\code{tools::R_user_dir("warprrr", which = "cache")}, which resolves to
+an OS-specific, user-writable cache location.}
 }
 \description{
-Defines an S7 class for handled data loading and caching in Parquet format.
+Defines an S7 class that handles data loading and on-disk caching
+using Parquet format where applicable.
 }
