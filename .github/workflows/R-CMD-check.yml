@@ -105,6 +105,11 @@ jobs:
           needs: check
           pak-version: 'stable'
 
+      - name: Run devtools::document()
+        if: matrix.config.os != 'ubuntu-latest'
+        run: |
+          Rscript -e "devtools::document()"
+
       - name: R CMD check
         uses: r-lib/actions/check-r-package@v2
         with:
