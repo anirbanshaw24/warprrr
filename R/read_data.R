@@ -1,4 +1,8 @@
 
+utils::globalVariables(
+  c("warprrr", "get_data", "inform_glue")
+)
+
 #' Title
 #'
 #' @param data_path The path to data. csv, psv, tsv, parquet, feather, txt,

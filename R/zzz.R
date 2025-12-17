@@ -1,8 +1,4 @@
 
-utils::globalVariables(
-  c("warprrr", "get_data", "inform_glue")
-)
-
 .onLoad <- function(...) {
   S7::methods_register()
 }
