@@ -50,8 +50,7 @@ jobs:
             libpng-dev \
             libtiff5-dev \
             libjpeg-dev \
-            libicu-dev \
-            libicu76
+            libicu-dev
 
       # ===== macOS Setup =====
       - name: Setup Pandoc (macOS)
