@@ -6,7 +6,7 @@
 \usage{
 read_data(
   data_path,
-  cache_path = "~/.cache/patient_profiles/",
+  cache_path = file.path(tools::R_user_dir("warprrr", which = "cache")),
   verbose = FALSE,
   ...
 )

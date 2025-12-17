@@ -8,11 +8,11 @@ chores <- function() {
   devtools::document()
   devtools::build_vignettes()
   devtools::check()
-  renv::snapshot(prompt = FALSE)
   covr::report(
     file = "validation/coverage.html",
     browse = FALSE
   )
+  renv::snapshot(prompt = FALSE)
   pkgdown::build_site_github_pages()
 }
 chores()

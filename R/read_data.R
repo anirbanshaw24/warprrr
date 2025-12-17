@@ -18,7 +18,8 @@
 #' @export
 #'
 read_data <- function(
-    data_path, cache_path = "~/.cache/patient_profiles/",
+    data_path,
+    cache_path = file.path(tools::R_user_dir("warprrr", which = "cache")),
     verbose = FALSE, ...) {
   read_fun_args <- list(...)
   warpr <- warprrr(

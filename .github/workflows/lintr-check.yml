@@ -17,6 +17,34 @@ jobs:
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
 
+      - name: 🧱 Install system dependencies (Pandoc, SSL, curl, text shaping)
+        if: matrix.config.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          set -euxo pipefail
+
+          sudo apt-get update
+
+          # Core system libraries for R packages (curl, ssl, xml)
+          sudo apt-get install -y \
+            libssl-dev \
+            libcurl4-openssl-dev \
+            libxml2-dev
+
+          # Text shaping libs (required by rmarkdown / pandoc / systemfonts)
+          sudo apt-get install -y \
+            libharfbuzz-dev \
+            libfribidi-dev
+
+          # System XML (only if explicitly required)
+          sudo apt-get install -y \
+            r-cran-xml || true
+
+          # NOTE:
+          # libssl1.1 is NOT available on ubuntu-latest (22.04+).
+          # Do NOT attempt to install it — native R packages must be rebuilt
+          # against OpenSSL 3 (libssl.so.3).
+
       - name: Install curl from P3M
         if: matrix.config.os != 'windows-latest'
         run: |
