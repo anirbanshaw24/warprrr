@@ -9,3 +9,7 @@
     assign("pkg_constants", constants, envir = pkg_env) # nolint
   }
 }
+
+utils::globalVariables(
+  c("warprrr", "get_data", "inform_glue")
+)
