@@ -25,7 +25,7 @@ testthat::describe("warprrr S7 class", {
   it("throws error if cache_path permissions are incorrect", {
     temp_perm <- tempfile()
     fs::dir_create(temp_perm)
-    Sys.chmod(temp_perm, mode = "0000", use_umask = FALSE)
+    Sys.chmod(temp_perm, mode = "0444", use_umask = FALSE)
     expect_error({
       dc <- warprrr(
         data_path = temp_csv,
@@ -163,6 +163,11 @@ testthat::describe("warprrr S7 class", {
 
     time1 <- system.time(get_data(dc, verbose = FALSE))["elapsed"]
     time2 <- system.time(get_data(dc, verbose = FALSE))["elapsed"]
+
+    print("====================================")
+    print(time1)
+    print(time2)
+    print("====================================")
 
     expect_true(time2 < time1 * 2) # At least not slower
   })

@@ -35,7 +35,6 @@ jobs:
           choco install pandoc
           choco install openssl
 
-
       - name: 🧱 Install system dependencies (Pandoc, SSL, curl, text shaping)
         if: matrix.config.os == 'ubuntu-latest'
         shell: bash
@@ -74,10 +73,11 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
 
-      - name: Clear renv cache for curl
+      - name: 🧹 Remove cached native libraries
         if: matrix.config.os == 'ubuntu-latest'
         run: |
-          rm -rf $HOME/.cache/R/renv/*curl*
+          rm -rf $HOME/.cache/R/renv
+          rm -rf ~/.R/library
 
       - name: 🔧 Force source builds on Linux
         if: matrix.config.os == 'ubuntu-latest'
