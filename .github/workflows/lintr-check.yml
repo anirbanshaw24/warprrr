@@ -22,11 +22,11 @@ jobs:
         run: |
           R -e 'install.packages("curl", repos = c(p3m = "https://p3m.dev/cran/__linux__/manylinux_2_28/latest"))'
 
-      - name: Install package
-        run: Rscript -e 'devtools::install()'
-
       - name: Install lintr and devtools
         run: Rscript -e 'install.packages(c("lintr", "devtools"))'
+
+      - name: Install package
+        run: Rscript -e 'devtools::install()'
 
       - name: Run lintr
         shell: Rscript {0}
