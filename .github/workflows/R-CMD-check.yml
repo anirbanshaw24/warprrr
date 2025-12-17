@@ -81,13 +81,30 @@ jobs:
           echo 'MAKEFLAGS=-j2' > ~/.R/Makevars
 
       # ===== renv Restore =====
-      - name: 📋 Restore renv
+      - name: 📋 Clean renv
         shell: Rscript {0}
         run: |
           if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
-          Sys.setenv(RENV_CONFIG_PAK_ENABLED = "FALSE")
-          options(pkgType = "source")
-          renv::restore(prompt = FALSE, rebuild = TRUE)
+
+          # On Ubuntu, purge cache and force rebuild
+          if (Sys.info()["sysname"] == "Linux") {
+            renv::purge("curl", prompt = FALSE)
+            renv::purge("openssl", prompt = FALSE)
+            renv::remove("stringi")
+            renv::purge("stringi", prompt = FALSE)
+          }
+
+      - name: 📋 Restore renv (force rebuild on Ubuntu)
+        shell: Rscript {0}
+        run: |
+          if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
+
+          # On Ubuntu, purge cache and force rebuild
+          if (Sys.info()["sysname"] == "Linux") {
+            renv::restore(prompt = FALSE, rebuild = TRUE)
+          } else {
+            renv::restore(prompt = FALSE)
+          }
 
       # ===== Install Critical Packages from Source (Ubuntu only) =====
       - name: 🔨 Rebuild curl & openssl from source (Ubuntu)
