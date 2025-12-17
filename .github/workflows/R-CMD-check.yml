@@ -101,6 +101,7 @@ jobs:
           Rscript -e 'install.packages("openssl", type = "source", repos = "https://cloud.r-project.org")'
           Rscript -e 'install.packages("curl", type = "source", repos = "https://cloud.r-project.org")'
           Rscript -e 'install.packages("arrow", type = "source", repos = "https://cloud.r-project.org")'
+          Rscript -e 'install.packages("stringi", type = "source", repos = "https://cloud.r-project.org")'
 
       # ===== Install Package Dependencies =====
       - name: Install dependencies

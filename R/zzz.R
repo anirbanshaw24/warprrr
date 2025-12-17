@@ -1,4 +1,8 @@
 
+utils::globalVariables(
+  c("warprrr", "get_data", "inform_glue")
+)
+
 .onLoad <- function(...) {
   S7::methods_register()
 }
@@ -9,7 +13,3 @@
     assign("pkg_constants", constants, envir = pkg_env) # nolint
   }
 }
-
-utils::globalVariables(
-  c("warprrr", "get_data", "inform_glue")
-)
