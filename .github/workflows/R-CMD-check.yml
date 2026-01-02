@@ -58,16 +58,18 @@ jobs:
         run: |
           brew install pandoc gettext
 
-          # Detect architecture and set paths
+          mkdir -p ~/.R
+
           if [[ $(uname -m) == 'arm64' ]]; then
             GETTEXT_PREFIX="/opt/homebrew/opt/gettext"
           else
             GETTEXT_PREFIX="/usr/local/opt/gettext"
           fi
 
-          echo "CPPFLAGS=-I${GETTEXT_PREFIX}/include" >> $GITHUB_ENV
-          echo "LDFLAGS=-L${GETTEXT_PREFIX}/lib" >> $GITHUB_ENV
-
+          cat <<EOF >> ~/.R/Makevars
+          CPPFLAGS += -I${GETTEXT_PREFIX}/include
+          LDFLAGS  += -L${GETTEXT_PREFIX}/lib
+          EOF
 
       # ===== R Setup =====
       - name: Install R
