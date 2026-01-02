@@ -53,25 +53,21 @@ jobs:
             libicu-dev
 
       # ===== macOS Setup =====
-      - name: Setup Pandoc (macOS)
-        if: matrix.config.os == 'macOS-latest'
-        run: brew install pandoc
-
-      - name: Install gettext (macOS)
-        if: matrix.config.os == 'macOS-latest'
-        run: brew install gettext
-
-      - name: Symlink gettext (libintl.h) to /usr/local/include
+      - name: Setup dependencies (macOS)
         if: matrix.config.os == 'macOS-latest'
         run: |
-          brew link gettext --force
+          brew install pandoc gettext
 
-      - name: Set build flags for libintl (macOS)
-        if: matrix.config.os == 'macOS-latest'
-        run: |
-          mkdir -p ~/.R
-          echo 'CFLAGS="-I/usr/local/include"' >> ~/.R/Makevars
-          echo 'LDFLAGS="-L/usr/local/lib"' >> ~/.R/Makevars
+          # Detect architecture and set paths
+          if [[ $(uname -m) == 'arm64' ]]; then
+            GETTEXT_PREFIX="/opt/homebrew/opt/gettext"
+          else
+            GETTEXT_PREFIX="/usr/local/opt/gettext"
+          fi
+
+          echo "CPPFLAGS=-I${GETTEXT_PREFIX}/include" >> $GITHUB_ENV
+          echo "LDFLAGS=-L${GETTEXT_PREFIX}/lib" >> $GITHUB_ENV
+
 
       # ===== R Setup =====
       - name: Install R
