@@ -15,4 +15,4 @@
 ^\.github$
 ^validation$
 ^.*\.log$
-
+^.*\.lintr$
