@@ -72,6 +72,21 @@ jobs:
           rm -rf ~/.R/library
           rm -rf renv/library
 
+      - name: 🔒 Disable binaries completely (Linux)
+        if: matrix.config.os == 'ubuntu-latest'
+        run: |
+          mkdir -p ~/.R
+          cat <<EOF >> ~/.Rprofile
+          options(
+            pkgType = "source",
+            install.packages.compile.from.source = "always"
+          )
+          Sys.setenv(
+            RENV_CONFIG_PAK_ENABLED = "FALSE",
+            RENV_CONFIG_BINARY_REPOS = ""
+          )
+          EOF
+
       # ===== Force Source Builds (Ubuntu only) =====
       - name: 🔧 Force source builds on Linux
         if: matrix.config.os == 'ubuntu-latest'
@@ -79,6 +94,12 @@ jobs:
           mkdir -p ~/.R
           echo 'options(pkgType = "source")' >> ~/.Rprofile
           echo 'MAKEFLAGS=-j2' > ~/.R/Makevars
+
+      - name: Configure pak for source builds (Ubuntu)
+        if: matrix.config.os == 'ubuntu-latest'
+        run: |
+          echo "PKG_BUILD_BINARY=false" >> $GITHUB_ENV
+          echo "_R_CHECK_FORCE_SUGGESTS_=false" >> $GITHUB_ENV
 
       # ===== renv Restore =====
       - name: 📋 Clean renv
@@ -92,6 +113,7 @@ jobs:
             renv::purge("openssl", prompt = FALSE)
             renv::remove("stringi")
             renv::purge("stringi", prompt = FALSE)
+            unlink(file.path(.libPaths()[1], "stringi"), recursive=TRUE, force=TRUE)
           }
 
       - name: 📋 Restore renv (force rebuild on Ubuntu)
@@ -125,6 +147,18 @@ jobs:
           extra-packages: |
             any::rcmdcheck
             any::devtools
+
+      - name: ICU version check (Ubuntu)
+        if: matrix.config.os == 'ubuntu-latest'
+        run: |
+          ldconfig -p | grep icui18n
+          dpkg -l | grep libicu
+
+      # ===== Force stringi rebuild AFTER pak (Ubuntu only) =====
+      - name: 🔨 Rebuild stringi after pak (Ubuntu)
+        if: matrix.config.os == 'ubuntu-latest'
+        run: |
+          Rscript -e 'remove.packages("stringi"); install.packages("stringi", type = "source", repos = "https://cloud.r-project.org")'
 
       # ===== Document Package =====
       - name: Run devtools::document()
