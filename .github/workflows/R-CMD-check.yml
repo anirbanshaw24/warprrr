@@ -69,6 +69,7 @@ jobs:
       - name: Set build flags for libintl (macOS)
         if: matrix.config.os == 'macOS-latest'
         run: |
+          mkdir -p ~/.R
           echo 'CFLAGS="-I/usr/local/include"' >> ~/.R/Makevars
           echo 'LDFLAGS="-L/usr/local/lib"' >> ~/.R/Makevars
 
