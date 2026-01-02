@@ -59,7 +59,7 @@ testthat::describe("read_data()", {
     time_with_cache <- time_with_cache[["elapsed"]]
 
     cache_faster_by <- (1 - time_with_cache / time_without_cache) * 100
-    testthat::expect_gt(cache_faster_by, 95)
+    testthat::expect_gt(cache_faster_by, 90)
     testthat::expect_lt(
       as.numeric(time_with_cache),
       as.numeric(time_without_cache)

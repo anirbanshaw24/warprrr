@@ -42,6 +42,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/simple_example.html">Simple Examples</a></li>
+    <li><a class="dropdown-item" href="../articles/data_formats_supported.html">Data Formats Supported</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -87,252 +88,213 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>The <code>warprrr</code> package provides a caching layer for data
-files of various formats such as CSV, Parquet, and SAS. It ensures
-reproducible access to data while maintaining file integrity and
-efficient caching.</p>
-<p>This vignette demonstrates <strong>basic usage</strong>, showing how
-to create a <code>warprrr</code> object, manage caches, and perform some
-checks.</p>
+<p>The <a href="https://github.com/anirbanshaw24/warprrr">warprrr</a> package provides a transparent caching
+layer for reading large data files in common clinical and analytical
+formats (for example SAS, XPT, CSV, and Parquet).</p>
+<p>Its primary goals are:</p>
+<ul>
+<li>
+<strong>Reproducibility</strong>: ensure that the same source file
+always resolves to the same cached artifact unless the file
+changes.</li>
+<li>
+<strong>Performance</strong>: avoid repeated expensive reads of
+large binary files.</li>
+<li>
+<strong>Integrity</strong>: detect changes in source files and
+invalidate caches automatically.</li>
+</ul>
+<p>This vignette demonstrates basic usage, focusing on reading SAS and
+XPT files and observing cache behavior.</p>
 </div>
 <div class="section level2">
-<h2 id="creating-a-warprrr-object">Creating a warprrr Object<a class="anchor" aria-label="anchor" href="#creating-a-warprrr-object"></a>
+<h2 id="generating-example-clinical-data">Generating Example Clinical Data<a class="anchor" aria-label="anchor" href="#generating-example-clinical-data"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Create temporary directories and files for demonstration</span></span>
-<span><span class="va">cache_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://fs.r-lib.org/reference/create.html" class="external-link">dir_create</a></span><span class="op">(</span><span class="va">cache_dir</span><span class="op">)</span></span>
-<span><span class="va">temp_csv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".csv"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">generate_patient_labs_long</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span></span>
+<span>  <span class="va">n_patients</span> <span class="op">=</span> <span class="fl">10000</span>,</span>
+<span>  <span class="va">visits_per_patient</span> <span class="op">=</span> <span class="fl">15</span>,</span>
+<span>  <span class="va">labs_per_visit</span> <span class="op">=</span> <span class="fl">8</span></span>
+<span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Save example data</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="va">temp_csv</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>  <span class="va">patient_ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"PT%06d"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_patients</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Initialize warprrr object</span></span>
-<span><span class="va">dc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span>data_path <span class="op">=</span> <span class="va">temp_csv</span>, cache_path <span class="op">=</span> <span class="va">cache_dir</span><span class="op">)</span></span>
-<span><span class="va">dc</span></span>
-<span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt;       mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb</span></span>
-<span><span class="co">#&gt;     &lt;num&gt; &lt;int&gt; &lt;num&gt; &lt;int&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;</span></span>
-<span><span class="co">#&gt;  1:  21.0     6 160.0   110  3.90 2.620 16.46     0     1     4     4</span></span>
-<span><span class="co">#&gt;  2:  21.0     6 160.0   110  3.90 2.875 17.02     0     1     4     4</span></span>
-<span><span class="co">#&gt;  3:  22.8     4 108.0    93  3.85 2.320 18.61     1     1     4     1</span></span>
-<span><span class="co">#&gt;  4:  21.4     6 258.0   110  3.08 3.215 19.44     1     0     3     1</span></span>
-<span><span class="co">#&gt;  5:  18.7     8 360.0   175  3.15 3.440 17.02     0     0     3     2</span></span>
-<span><span class="co">#&gt;  6:  18.1     6 225.0   105  2.76 3.460 20.22     1     0     3     1</span></span>
-<span><span class="co">#&gt;  7:  14.3     8 360.0   245  3.21 3.570 15.84     0     0     3     4</span></span>
-<span><span class="co">#&gt;  8:  24.4     4 146.7    62  3.69 3.190 20.00     1     0     4     2</span></span>
-<span><span class="co">#&gt;  9:  22.8     4 140.8    95  3.92 3.150 22.90     1     0     4     2</span></span>
-<span><span class="co">#&gt; 10:  19.2     6 167.6   123  3.92 3.440 18.30     1     0     4     4</span></span>
-<span><span class="co">#&gt; 11:  17.8     6 167.6   123  3.92 3.440 18.90     1     0     4     4</span></span>
-<span><span class="co">#&gt; 12:  16.4     8 275.8   180  3.07 4.070 17.40     0     0     3     3</span></span>
-<span><span class="co">#&gt; 13:  17.3     8 275.8   180  3.07 3.730 17.60     0     0     3     3</span></span>
-<span><span class="co">#&gt; 14:  15.2     8 275.8   180  3.07 3.780 18.00     0     0     3     3</span></span>
-<span><span class="co">#&gt; 15:  10.4     8 472.0   205  2.93 5.250 17.98     0     0     3     4</span></span>
-<span><span class="co">#&gt; 16:  10.4     8 460.0   215  3.00 5.424 17.82     0     0     3     4</span></span>
-<span><span class="co">#&gt; 17:  14.7     8 440.0   230  3.23 5.345 17.42     0     0     3     4</span></span>
-<span><span class="co">#&gt; 18:  32.4     4  78.7    66  4.08 2.200 19.47     1     1     4     1</span></span>
-<span><span class="co">#&gt; 19:  30.4     4  75.7    52  4.93 1.615 18.52     1     1     4     2</span></span>
-<span><span class="co">#&gt; 20:  33.9     4  71.1    65  4.22 1.835 19.90     1     1     4     1</span></span>
-<span><span class="co">#&gt; 21:  21.5     4 120.1    97  3.70 2.465 20.01     1     0     3     1</span></span>
-<span><span class="co">#&gt; 22:  15.5     8 318.0   150  2.76 3.520 16.87     0     0     3     2</span></span>
-<span><span class="co">#&gt; 23:  15.2     8 304.0   150  3.15 3.435 17.30     0     0     3     2</span></span>
-<span><span class="co">#&gt; 24:  13.3     8 350.0   245  3.73 3.840 15.41     0     0     3     4</span></span>
-<span><span class="co">#&gt; 25:  19.2     8 400.0   175  3.08 3.845 17.05     0     0     3     2</span></span>
-<span><span class="co">#&gt; 26:  27.3     4  79.0    66  4.08 1.935 18.90     1     1     4     1</span></span>
-<span><span class="co">#&gt; 27:  26.0     4 120.3    91  4.43 2.140 16.70     0     1     5     2</span></span>
-<span><span class="co">#&gt; 28:  30.4     4  95.1   113  3.77 1.513 16.90     1     1     5     2</span></span>
-<span><span class="co">#&gt; 29:  15.8     8 351.0   264  4.22 3.170 14.50     0     1     5     4</span></span>
-<span><span class="co">#&gt; 30:  19.7     6 145.0   175  3.62 2.770 15.50     0     1     5     6</span></span>
-<span><span class="co">#&gt; 31:  15.0     8 301.0   335  3.54 3.570 14.60     0     1     5     8</span></span>
-<span><span class="co">#&gt; 32:  21.4     4 121.0   109  4.11 2.780 18.60     1     1     4     2</span></span>
-<span><span class="co">#&gt;       mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $warprrr</span></span>
-<span><span class="co">#&gt; &lt;warprrr::warprrr&gt;</span></span>
-<span><span class="co">#&gt;  @ data_path           : chr "/tmp/RtmpjR0ywn/file250a5a5975042.csv"</span></span>
-<span><span class="co">#&gt;  @ read_fun_args       : list()</span></span>
-<span><span class="co">#&gt;  @ cache_path          : chr "/tmp/RtmpjR0ywn/file250a5a25bfb228"</span></span>
-<span><span class="co">#&gt;  @ file_ext            : chr "csv"</span></span>
-<span><span class="co">#&gt;  @ file_info           : tibble [1 × 18] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">#&gt;  $ path             : 'fs_path' chr "/tmp/RtmpjR0ywn/file250a5a5975042.csv"</span></span>
-<span><span class="co">#&gt;  $ type             : Factor w/ 8 levels "any","block_device",..: 7</span></span>
-<span><span class="co">#&gt;  $ size             : 'fs_bytes' num 1.27K</span></span>
-<span><span class="co">#&gt;  $ permissions      : 'fs_perms' int rw-r--r--</span></span>
-<span><span class="co">#&gt;  $ modification_time: POSIXct[1:1], format: "2025-12-17 05:51:05"</span></span>
-<span><span class="co">#&gt;  $ user             : chr "shawa11"</span></span>
-<span><span class="co">#&gt;  $ group            : chr "gbs"</span></span>
-<span><span class="co">#&gt;  $ device_id        : num 66307</span></span>
-<span><span class="co">#&gt;  $ hard_links       : num 1</span></span>
-<span><span class="co">#&gt;  $ special_device_id: num 0</span></span>
-<span><span class="co">#&gt;  $ inode            : num 3.57e+08</span></span>
-<span><span class="co">#&gt;  $ block_size       : num 4096</span></span>
-<span><span class="co">#&gt;  $ blocks           : num 8</span></span>
-<span><span class="co">#&gt;  $ flags            : int 0</span></span>
-<span><span class="co">#&gt;  $ generation       : num 0</span></span>
-<span><span class="co">#&gt;  $ access_time      : POSIXct[1:1], format: "2025-12-17 05:51:05"</span></span>
-<span><span class="co">#&gt;  $ change_time      : POSIXct[1:1], format: "2025-12-17 05:51:05"</span></span>
-<span><span class="co">#&gt;  $ birth_time       : POSIXct[1:1], format: "2025-12-17 05:51:05"</span></span>
-<span><span class="co">#&gt;  @ cache_hash          : chr "2442fdda530d9d80150fe29ef7e93aac"</span></span>
-<span><span class="co">#&gt;  @ cache_ext           : chr ".feather"</span></span>
-<span><span class="co">#&gt;  @ cache_hash_file_name: 'glue' chr "2442fdda530d9d80150fe29ef7e93aac.feather"</span></span>
-<span><span class="co">#&gt;  @ cache_full_file_path: 'fs_path' chr "/tmp/RtmpjR0ywn/file250a5a25bfb228/2442fdda530d9d80150fe29ef7e93aac.feather"</span></span>
-<span><span class="co">#&gt;  @ data_object         :Classes 'data.table' and 'data.frame':   32 obs. of  11 variables:</span></span>
-<span><span class="co">#&gt;  .. $ mpg : num  21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...</span></span>
-<span><span class="co">#&gt;  .. $ cyl : int  6 6 4 6 8 6 8 4 4 6 ...</span></span>
-<span><span class="co">#&gt;  .. $ disp: num  160 160 108 258 360 ...</span></span>
-<span><span class="co">#&gt;  .. $ hp  : int  110 110 93 110 175 105 245 62 95 123 ...</span></span>
-<span><span class="co">#&gt;  .. $ drat: num  3.9 3.9 3.85 3.08 3.15 2.76 3.21 3.69 3.92 3.92 ...</span></span>
-<span><span class="co">#&gt;  .. $ wt  : num  2.62 2.88 2.32 3.21 3.44 ...</span></span>
-<span><span class="co">#&gt;  .. $ qsec: num  16.5 17 18.6 19.4 17 ...</span></span>
-<span><span class="co">#&gt;  .. $ vs  : int  0 0 1 1 0 1 0 1 1 1 ...</span></span>
-<span><span class="co">#&gt;  .. $ am  : int  1 1 1 0 0 0 0 0 0 0 ...</span></span>
-<span><span class="co">#&gt;  .. $ gear: int  4 4 4 3 3 3 3 4 4 4 ...</span></span>
-<span><span class="co">#&gt;  .. $ carb: int  4 4 1 1 2 1 4 2 2 4 ...</span></span>
-<span><span class="co">#&gt;  .. - attr(*, ".internal.selfref")=&lt;externalptr&gt;</span></span></code></pre></div>
-<div class="section level3">
-<h3 id="checking-cache-directory">Checking Cache Directory<a class="anchor" aria-label="anchor" href="#checking-cache-directory"></a>
-</h3>
+<span>  <span class="va">patient_visits</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/J.html" class="external-link">CJ</a></span><span class="op">(</span></span>
+<span>    PatientID <span class="op">=</span> <span class="va">patient_ids</span>,</span>
+<span>    VisitNumber <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">visits_per_patient</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span>  <span class="va">patient_visits</span><span class="op">[</span>, <span class="va">VisitDate</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-01-01"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>                   <span class="fu"><a href="https://rdrr.io/r/base/cumsum.html" class="external-link">cumsum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">7</span><span class="op">:</span><span class="fl">60</span>, <span class="va">.N</span>, <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                 by <span class="op">=</span> <span class="va">PatientID</span><span class="op">]</span></span>
+<span></span>
+<span>  <span class="va">lab_tests</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Glucose"</span>, <span class="st">"Hemoglobin"</span>, <span class="st">"WBC"</span>, <span class="st">"Platelets"</span>,</span>
+<span>    <span class="st">"Creatinine"</span>, <span class="st">"ALT"</span>, <span class="st">"AST"</span>, <span class="st">"BUN"</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span>  <span class="va">dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/J.html" class="external-link">CJ</a></span><span class="op">(</span></span>
+<span>    PatientID <span class="op">=</span> <span class="va">patient_visits</span><span class="op">$</span><span class="va">PatientID</span>,</span>
+<span>    VisitNumber <span class="op">=</span> <span class="va">patient_visits</span><span class="op">$</span><span class="va">VisitNumber</span>,</span>
+<span>    LabTest <span class="op">=</span> <span class="va">lab_tests</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">labs_per_visit</span><span class="op">)</span><span class="op">]</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span>  <span class="va">dt</span> <span class="op">&lt;-</span> <span class="va">patient_visits</span><span class="op">[</span><span class="va">dt</span>, on <span class="op">=</span> <span class="fu">.</span><span class="op">(</span><span class="va">PatientID</span>, <span class="va">VisitNumber</span><span class="op">)</span><span class="op">]</span></span>
+<span></span>
+<span>  <span class="va">dt</span><span class="op">[</span>, <span class="va">LabValue</span> <span class="op">:=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fcase.html" class="external-link">fcase</a></span><span class="op">(</span></span>
+<span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"Glucose"</span>,      <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">.N</span>, <span class="fl">95</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"Hemoglobin"</span>,  <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">.N</span>, <span class="fl">14</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"WBC"</span>,         <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">.N</span>, <span class="fl">7.5</span>, <span class="fl">2.5</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>,</span>
+<span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"Platelets"</span>,  <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">.N</span>, <span class="fl">250</span>, <span class="fl">60</span><span class="op">)</span>, <span class="fl">0</span><span class="op">)</span>,</span>
+<span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"Creatinine"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">.N</span>, <span class="fl">1.0</span>, <span class="fl">0.3</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>,</span>
+<span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"ALT"</span>,         <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">.N</span>, <span class="fl">25</span>, <span class="fl">15</span><span class="op">)</span>, <span class="fl">0</span><span class="op">)</span>,</span>
+<span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"AST"</span>,         <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">.N</span>, <span class="fl">28</span>, <span class="fl">12</span><span class="op">)</span>, <span class="fl">0</span><span class="op">)</span>,</span>
+<span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"BUN"</span>,         <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">.N</span>, <span class="fl">15</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fl">1</span><span class="op">)</span></span>
+<span>  <span class="op">)</span><span class="op">]</span></span>
+<span></span>
+<span>  <span class="va">dt</span><span class="op">[</span>, <span class="va">Unit</span> <span class="op">:=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fcase.html" class="external-link">fcase</a></span><span class="op">(</span></span>
+<span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"Glucose"</span>,      <span class="st">"mg/dL"</span>,</span>
+<span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"Hemoglobin"</span>,  <span class="st">"g/dL"</span>,</span>
+<span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"WBC"</span>,         <span class="st">"10^3/uL"</span>,</span>
+<span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"Platelets"</span>,  <span class="st">"10^3/uL"</span>,</span>
+<span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"Creatinine"</span>, <span class="st">"mg/dL"</span>,</span>
+<span>    <span class="va">LabTest</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ALT"</span>, <span class="st">"AST"</span><span class="op">)</span>, <span class="st">"U/L"</span>,</span>
+<span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"BUN"</span>,         <span class="st">"mg/dL"</span></span>
+<span>  <span class="op">)</span><span class="op">]</span></span>
+<span></span>
+<span>  <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">dt</span>, <span class="va">PatientID</span>, <span class="va">VisitDate</span>, <span class="va">LabTest</span><span class="op">)</span></span>
+<span>  <span class="va">dt</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># The cache directory should exist</span></span>
-<span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/file_access.html" class="external-link">dir_exists</a></span><span class="op">(</span><span class="va">dc</span><span class="op">$</span><span class="va">warprrr</span><span class="op">@</span><span class="va">cache_path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; /tmp/RtmpjR0ywn/file250a5a25bfb228 </span></span>
-<span><span class="co">#&gt;                               TRUE</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="file-info">File Info<a class="anchor" aria-label="anchor" href="#file-info"></a>
-</h3>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Get metadata about the source file</span></span>
-<span><span class="va">dc</span><span class="op">$</span><span class="va">warprrr</span><span class="op">@</span><span class="va">file_info</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 18</span></span></span>
-<span><span class="co">#&gt;   path         type   size permissions modification_time   user  group device_id</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;fs::path&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fs:&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fs::perms&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> …5975042.csv file  1.27K rw-r--r--   2025-12-17 <span style="color: #949494;">05:51:05</span> shaw… gbs       <span style="text-decoration: underline;">66</span>307</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 10 more variables: hard_links &lt;dbl&gt;, special_device_id &lt;dbl&gt;, inode &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   block_size &lt;dbl&gt;, blocks &lt;dbl&gt;, flags &lt;int&gt;, generation &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   access_time &lt;dttm&gt;, change_time &lt;dttm&gt;, birth_time &lt;dttm&gt;</span></span></span></code></pre></div>
-</div>
+<code class="sourceCode R"><span><span class="va">lab_data</span> <span class="op">&lt;-</span> <span class="fu">generate_patient_labs_long</span><span class="op">(</span></span>
+<span>  n_patients <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  visits_per_patient <span class="op">=</span> <span class="fl">15</span>,</span>
+<span>  labs_per_visit <span class="op">=</span> <span class="fl">8</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">lab_data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 18000000        6</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">lab_data</span>, <span class="fl">20</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Key: &lt;PatientID, VisitNumber&gt;</span></span>
+<span><span class="co">#&gt;     PatientID VisitNumber  VisitDate LabTest LabValue   Unit</span></span>
+<span><span class="co">#&gt;        &lt;char&gt;       &lt;int&gt;     &lt;Date&gt;  &lt;char&gt;    &lt;num&gt; &lt;char&gt;</span></span>
+<span><span class="co">#&gt;  1:  PT000001           1 2020-02-07     ALT       10    U/L</span></span>
+<span><span class="co">#&gt;  2:  PT000001           1 2020-02-07     ALT       -2    U/L</span></span>
+<span><span class="co">#&gt;  3:  PT000001           1 2020-02-07     ALT        2    U/L</span></span>
+<span><span class="co">#&gt;  4:  PT000001           1 2020-02-07     ALT       33    U/L</span></span>
+<span><span class="co">#&gt;  5:  PT000001           1 2020-02-07     ALT       30    U/L</span></span>
+<span><span class="co">#&gt;  6:  PT000001           1 2020-02-07     ALT       28    U/L</span></span>
+<span><span class="co">#&gt;  7:  PT000001           1 2020-02-07     ALT       30    U/L</span></span>
+<span><span class="co">#&gt;  8:  PT000001           1 2020-02-07     ALT       15    U/L</span></span>
+<span><span class="co">#&gt;  9:  PT000001           1 2020-02-07     ALT       46    U/L</span></span>
+<span><span class="co">#&gt; 10:  PT000001           1 2020-02-07     ALT       36    U/L</span></span>
+<span><span class="co">#&gt; 11:  PT000001           1 2020-02-07     ALT      -11    U/L</span></span>
+<span><span class="co">#&gt; 12:  PT000001           1 2020-02-07     ALT       37    U/L</span></span>
+<span><span class="co">#&gt; 13:  PT000001           1 2020-02-07     ALT       13    U/L</span></span>
+<span><span class="co">#&gt; 14:  PT000001           1 2020-02-07     ALT       13    U/L</span></span>
+<span><span class="co">#&gt; 15:  PT000001           1 2020-02-07     ALT       10    U/L</span></span>
+<span><span class="co">#&gt; 16:  PT000001           1 2020-02-07     ALT      -16    U/L</span></span>
+<span><span class="co">#&gt; 17:  PT000001           1 2020-02-07     ALT       22    U/L</span></span>
+<span><span class="co">#&gt; 18:  PT000001           1 2020-02-07     ALT       36    U/L</span></span>
+<span><span class="co">#&gt; 19:  PT000001           1 2020-02-07     ALT       31    U/L</span></span>
+<span><span class="co">#&gt; 20:  PT000001           1 2020-02-07     ALT       10    U/L</span></span>
+<span><span class="co">#&gt;     PatientID VisitNumber  VisitDate LabTest LabValue   Unit</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="accessing-the-data-object">Accessing the Data Object<a class="anchor" aria-label="anchor" href="#accessing-the-data-object"></a>
+<h2 id="timing-helper">Timing Helper<a class="anchor" aria-label="anchor" href="#timing-helper"></a>
+</h2>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">time_code</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">expr</span>, <span class="va">message</span> <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">start</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">expr</span><span class="op">)</span></span>
+<span>  <span class="va">elapsed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/difftime.html" class="external-link">difftime</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">start</span>, units <span class="op">=</span> <span class="st">"secs"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">msg_prefix</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nzchar</a></span><span class="op">(</span><span class="va">message</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"to"</span>, <span class="va">message</span><span class="op">)</span> <span class="kw">else</span> <span class="st">""</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Time taken"</span>, <span class="va">msg_prefix</span>, <span class="st">":"</span>, <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%.2f secs"</span>, <span class="va">elapsed</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">elapsed</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="writing-and-reading-source-files">Writing and Reading Source Files<a class="anchor" aria-label="anchor" href="#writing-and-reading-source-files"></a>
 </h2>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Read the underlying data as data.table</span></span>
-<span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="va">dc</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span>
-<span><span class="co">#&gt;      mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb</span></span>
-<span><span class="co">#&gt;    &lt;num&gt; &lt;int&gt; &lt;num&gt; &lt;int&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1:  21.0     6   160   110  3.90 2.620 16.46     0     1     4     4</span></span>
-<span><span class="co">#&gt; 2:  21.0     6   160   110  3.90 2.875 17.02     0     1     4     4</span></span>
-<span><span class="co">#&gt; 3:  22.8     4   108    93  3.85 2.320 18.61     1     1     4     1</span></span>
-<span><span class="co">#&gt; 4:  21.4     6   258   110  3.08 3.215 19.44     1     0     3     1</span></span>
-<span><span class="co">#&gt; 5:  18.7     8   360   175  3.15 3.440 17.02     0     0     3     2</span></span>
-<span><span class="co">#&gt; 6:  18.1     6   225   105  2.76 3.460 20.22     1     0     3     1</span></span></code></pre></div>
+<code class="sourceCode R"><span></span>
+<span><span class="va">data_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"warprrr-vignette"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">data_dir</span>, showWarnings <span class="op">=</span> <span class="cn">FALSE</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="fu">haven</span><span class="fu">::</span><span class="fu"><a href="https://haven.tidyverse.org/reference/write_sas.html" class="external-link">write_sas</a></span><span class="op">(</span></span>
+<span>    <span class="va">lab_data</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"lab_data.sas7bdat"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span>, message <span class="op">=</span> <span class="st">"write a .sas7bdat file"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: `write_sas()` was deprecated in haven 2.5.2.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use `write_xpt()` instead.</span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span>
+<span><span class="co">#&gt; Time taken to write a .sas7bdat file : 8.86 secs</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Read the underlying data as data.table</span></span>
-<span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="va">dc</span><span class="op">$</span><span class="va">warprrr</span><span class="op">@</span><span class="va">data_object</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span>
-<span><span class="co">#&gt;      mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb</span></span>
-<span><span class="co">#&gt;    &lt;num&gt; &lt;int&gt; &lt;num&gt; &lt;int&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1:  21.0     6   160   110  3.90 2.620 16.46     0     1     4     4</span></span>
-<span><span class="co">#&gt; 2:  21.0     6   160   110  3.90 2.875 17.02     0     1     4     4</span></span>
-<span><span class="co">#&gt; 3:  22.8     4   108    93  3.85 2.320 18.61     1     1     4     1</span></span>
-<span><span class="co">#&gt; 4:  21.4     6   258   110  3.08 3.215 19.44     1     0     3     1</span></span>
-<span><span class="co">#&gt; 5:  18.7     8   360   175  3.15 3.440 17.02     0     0     3     2</span></span>
-<span><span class="co">#&gt; 6:  18.1     6   225   105  2.76 3.460 20.22     1     0     3     1</span></span></code></pre></div>
-<div class="section level3">
-<h3 id="using-get_data">Using get_data()<a class="anchor" aria-label="anchor" href="#using-get_data"></a>
-</h3>
+<code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="fu">haven</span><span class="fu">::</span><span class="fu"><a href="https://haven.tidyverse.org/reference/read_sas.html" class="external-link">read_sas</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"lab_data.sas7bdat"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span>, message <span class="op">=</span> <span class="st">"read the same .sas7bdat file directly"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Time taken to read the same .sas7bdat file directly : 17.28 secs</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Use get_data() for caching workflow</span></span>
-<span><span class="va">cached_data</span> <span class="op">&lt;-</span> <span class="fu">warprrr</span><span class="fu">:::</span><span class="fu">get_data</span><span class="op">(</span><span class="va">dc</span><span class="op">$</span><span class="va">warprrr</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="va">cached_data</span></span>
-<span><span class="co">#&gt;       mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb</span></span>
-<span><span class="co">#&gt;     &lt;num&gt; &lt;int&gt; &lt;num&gt; &lt;int&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;</span></span>
-<span><span class="co">#&gt;  1:  21.0     6 160.0   110  3.90 2.620 16.46     0     1     4     4</span></span>
-<span><span class="co">#&gt;  2:  21.0     6 160.0   110  3.90 2.875 17.02     0     1     4     4</span></span>
-<span><span class="co">#&gt;  3:  22.8     4 108.0    93  3.85 2.320 18.61     1     1     4     1</span></span>
-<span><span class="co">#&gt;  4:  21.4     6 258.0   110  3.08 3.215 19.44     1     0     3     1</span></span>
-<span><span class="co">#&gt;  5:  18.7     8 360.0   175  3.15 3.440 17.02     0     0     3     2</span></span>
-<span><span class="co">#&gt;  6:  18.1     6 225.0   105  2.76 3.460 20.22     1     0     3     1</span></span>
-<span><span class="co">#&gt;  7:  14.3     8 360.0   245  3.21 3.570 15.84     0     0     3     4</span></span>
-<span><span class="co">#&gt;  8:  24.4     4 146.7    62  3.69 3.190 20.00     1     0     4     2</span></span>
-<span><span class="co">#&gt;  9:  22.8     4 140.8    95  3.92 3.150 22.90     1     0     4     2</span></span>
-<span><span class="co">#&gt; 10:  19.2     6 167.6   123  3.92 3.440 18.30     1     0     4     4</span></span>
-<span><span class="co">#&gt; 11:  17.8     6 167.6   123  3.92 3.440 18.90     1     0     4     4</span></span>
-<span><span class="co">#&gt; 12:  16.4     8 275.8   180  3.07 4.070 17.40     0     0     3     3</span></span>
-<span><span class="co">#&gt; 13:  17.3     8 275.8   180  3.07 3.730 17.60     0     0     3     3</span></span>
-<span><span class="co">#&gt; 14:  15.2     8 275.8   180  3.07 3.780 18.00     0     0     3     3</span></span>
-<span><span class="co">#&gt; 15:  10.4     8 472.0   205  2.93 5.250 17.98     0     0     3     4</span></span>
-<span><span class="co">#&gt; 16:  10.4     8 460.0   215  3.00 5.424 17.82     0     0     3     4</span></span>
-<span><span class="co">#&gt; 17:  14.7     8 440.0   230  3.23 5.345 17.42     0     0     3     4</span></span>
-<span><span class="co">#&gt; 18:  32.4     4  78.7    66  4.08 2.200 19.47     1     1     4     1</span></span>
-<span><span class="co">#&gt; 19:  30.4     4  75.7    52  4.93 1.615 18.52     1     1     4     2</span></span>
-<span><span class="co">#&gt; 20:  33.9     4  71.1    65  4.22 1.835 19.90     1     1     4     1</span></span>
-<span><span class="co">#&gt; 21:  21.5     4 120.1    97  3.70 2.465 20.01     1     0     3     1</span></span>
-<span><span class="co">#&gt; 22:  15.5     8 318.0   150  2.76 3.520 16.87     0     0     3     2</span></span>
-<span><span class="co">#&gt; 23:  15.2     8 304.0   150  3.15 3.435 17.30     0     0     3     2</span></span>
-<span><span class="co">#&gt; 24:  13.3     8 350.0   245  3.73 3.840 15.41     0     0     3     4</span></span>
-<span><span class="co">#&gt; 25:  19.2     8 400.0   175  3.08 3.845 17.05     0     0     3     2</span></span>
-<span><span class="co">#&gt; 26:  27.3     4  79.0    66  4.08 1.935 18.90     1     1     4     1</span></span>
-<span><span class="co">#&gt; 27:  26.0     4 120.3    91  4.43 2.140 16.70     0     1     5     2</span></span>
-<span><span class="co">#&gt; 28:  30.4     4  95.1   113  3.77 1.513 16.90     1     1     5     2</span></span>
-<span><span class="co">#&gt; 29:  15.8     8 351.0   264  4.22 3.170 14.50     0     1     5     4</span></span>
-<span><span class="co">#&gt; 30:  19.7     6 145.0   175  3.62 2.770 15.50     0     1     5     6</span></span>
-<span><span class="co">#&gt; 31:  15.0     8 301.0   335  3.54 3.570 14.60     0     1     5     8</span></span>
-<span><span class="co">#&gt; 32:  21.4     4 121.0   109  4.11 2.780 18.60     1     1     4     2</span></span>
-<span><span class="co">#&gt;       mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb</span></span></code></pre></div>
-</div>
-</div>
-<div class="section level2">
-<h2 id="cache-hash-and-cache-file">Cache Hash and Cache File<a class="anchor" aria-label="anchor" href="#cache-hash-and-cache-file"></a>
-</h2>
+<code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="fu">haven</span><span class="fu">::</span><span class="fu"><a href="https://haven.tidyverse.org/reference/read_xpt.html" class="external-link">write_xpt</a></span><span class="op">(</span></span>
+<span>    <span class="va">lab_data</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"lab_data.xpt"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span>, message <span class="op">=</span> <span class="st">"write an .xpt file"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Time taken to write an .xpt file : 10.11 secs</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Unique hash based on the file content</span></span>
-<span><span class="va">dc</span><span class="op">$</span><span class="va">warprrr</span><span class="op">@</span><span class="va">cache_hash</span></span>
-<span><span class="co">#&gt; [1] "2442fdda530d9d80150fe29ef7e93aac"</span></span>
-<span></span>
-<span><span class="co"># Cached file path</span></span>
-<span><span class="va">dc</span><span class="op">$</span><span class="va">warprrr</span><span class="op">@</span><span class="va">cache_full_file_path</span></span>
-<span><span class="co">#&gt; /tmp/RtmpjR0ywn/file250a5a25bfb228/2442fdda530d9d80150fe29ef7e93aac.feather</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="fu">haven</span><span class="fu">::</span><span class="fu"><a href="https://haven.tidyverse.org/reference/read_xpt.html" class="external-link">read_xpt</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"lab_data.xpt"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span>, message <span class="op">=</span> <span class="st">"read the same .xpt file directly"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Time taken to read the same .xpt file directly : 21.37 secs</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="handling-multiple-formats">Handling Multiple Formats<a class="anchor" aria-label="anchor" href="#handling-multiple-formats"></a>
+<h2 id="reading-with-warprrr">Reading with warprrr<a class="anchor" aria-label="anchor" href="#reading-with-warprrr"></a>
 </h2>
-<p><code>warprrr</code> supports CSV, Parquet, and SAS7BDAT (if
-<code>haven</code> is installed).</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Example: reading parquet files</span></span>
-<span><span class="va">temp_parquet</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".parquet"</span><span class="op">)</span></span>
-<span><span class="fu">arrow</span><span class="fu">::</span><span class="fu"><a href="https://arrow.apache.org/docs/r/reference/write_parquet.html" class="external-link">write_parquet</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="va">temp_parquet</span><span class="op">)</span></span>
-<span><span class="va">dc_parquet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span>data_path <span class="op">=</span> <span class="va">temp_parquet</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dc_parquet</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="error-handling">Error Handling<a class="anchor" aria-label="anchor" href="#error-handling"></a>
-</h2>
+<code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="fu">warprrr</span><span class="fu">::</span><span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"lab_data.sas7bdat"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span>, message <span class="op">=</span> <span class="st">"read an SAS file with {warprrr} (initial read)"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Time taken to read an SAS file with {warprrr} (initial read) : 20.00 secs</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Unsupported file format</span></span>
-<span><span class="va">temp_file_unsupported</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".tar"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span><span class="st">"Unsupported file format"</span>, <span class="va">temp_file_unsupported</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://testthat.r-lib.org/reference/expect_error.html" class="external-link">expect_error</a></span><span class="op">(</span></span>
-<span>  <span class="va">dc_error</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span>data_path <span class="op">=</span> <span class="va">temp_file_unsupported</span><span class="op">)</span>,</span>
-<span>  <span class="st">"tar files are not supported"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="fu">warprrr</span><span class="fu">::</span><span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"lab_data.sas7bdat"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span>, message <span class="op">=</span> <span class="st">"read the same SAS file again from cache"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Time taken to read the same SAS file again from cache : 0.42 secs</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="fu">warprrr</span><span class="fu">::</span><span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"lab_data.xpt"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span>, message <span class="op">=</span> <span class="st">"read an XPT file with {warprrr} (initial read)"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Time taken to read an XPT file with {warprrr} (initial read) : 24.20 secs</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="fu">warprrr</span><span class="fu">::</span><span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"lab_data.xpt"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span>, message <span class="op">=</span> <span class="st">"read the same XPT file again from cache"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Time taken to read the same XPT file again from cache : 0.69 secs</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="cleanup">Cleanup<a class="anchor" aria-label="anchor" href="#cleanup"></a>
+<h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-</div>
-<div class="section level2">
-<h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
-</h2>
-<p>This vignette illustrated: - Creating a <code>warprrr</code> object -
-Reading and caching data - Inspecting file metadata - Handling multiple
-formats - Using utility functions</p>
-<p><code>warprrr</code> simplifies <strong>reproducible data
-management</strong> while ensuring cache integrity and efficiency.</p>
+<p>This vignette demonstrated how <a href="https://github.com/anirbanshaw24/warprrr">warprrr</a> provides a
+drop-in, high-performance caching layer for large clinical data files
+with automatic cache reuse and invalidation.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
