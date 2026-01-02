@@ -1,0 +1,160 @@
+---
+title: "Data Formats Supported: warprrr"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Data Formats Supported: warprrr}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(warprrr)
+library(data.table)
+library(fs)
+```
+
+## Introduction
+
+The `{warprrr}` package provides a unified, cached interface for reading a variety of common clinical and analytical data formats.
+This vignette demonstrates **all file formats supported by `read_data()`**, shows how they are written for demonstration purposes,
+and confirms that they can be read through the same interface with automatic caching.
+
+Supported formats:
+
+- Delimited text: **CSV**, **PSV**, **TSV**, **TXT**
+- Columnar storage: **Parquet**, **Feather**
+- Clinical / statistical: **SAS7BDAT**, **XPT**
+
+## Example Dataset
+
+```{r example-data}
+set.seed(42)
+
+dt <- data.table(
+  SubjectID = sprintf("SUBJ%03d", 1:100),
+  Visit = rep(1:4, length.out = 100),
+  Value = round(rnorm(100, 100, 15), 2),
+  Flag = sample(c("Y", "N"), 100, TRUE)
+)
+
+dt[]
+```
+
+## Output Directory
+
+```{r output-dir}
+data_dir <- file.path(tempdir(), "warprrr-formats")
+dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
+
+data_dir
+```
+
+## Writing Source Files
+
+### Delimited Text Files
+
+```{r write-delimited}
+fwrite(dt, file.path(data_dir, "example.csv"))
+fwrite(dt, file.path(data_dir, "example.tsv"), sep = "\t")
+fwrite(dt, file.path(data_dir, "example.psv"), sep = "|")
+fwrite(dt, file.path(data_dir, "example.txt"), sep = ",")
+```
+
+### Columnar Formats
+
+```{r write-columnar}
+arrow::write_parquet(dt, file.path(data_dir, "example.parquet"))
+arrow::write_feather(dt, file.path(data_dir, "example.feather"))
+```
+
+### Clinical / Statistical Formats
+
+```{r write-clinical}
+haven::write_sas(dt, file.path(data_dir, "example.sas7bdat"))
+haven::write_xpt(dt, file.path(data_dir, "example.xpt"))
+```
+
+## Reading with `read_data()`
+
+All formats are read using the same `read_data()` interface. The first read populates the cache; subsequent reads reuse it
+unless the source file changes.
+
+### CSV
+
+```{r read-csv}
+res_csv <- read_data(file.path(data_dir, "example.csv"), verbose = TRUE)
+str(res_csv$data)
+```
+
+### TSV
+
+```{r read-tsv}
+res_tsv <- read_data(file.path(data_dir, "example.tsv"), verbose = TRUE)
+```
+
+### PSV
+
+```{r read-psv}
+res_psv <- read_data(file.path(data_dir, "example.psv"), verbose = TRUE)
+```
+
+### TXT
+
+```{r read-txt}
+res_txt <- read_data(file.path(data_dir, "example.txt"), verbose = TRUE)
+```
+
+### Parquet
+
+```{r read-parquet}
+res_parquet <- read_data(file.path(data_dir, "example.parquet"), verbose = TRUE)
+```
+
+### Feather
+
+```{r read-feather}
+res_feather <- read_data(file.path(data_dir, "example.feather"), verbose = TRUE)
+```
+
+### SAS7BDAT
+
+```{r read-sas}
+res_sas <- read_data(file.path(data_dir, "example.sas7bdat"), verbose = TRUE)
+```
+
+### XPT
+
+```{r read-xpt}
+res_xpt <- read_data(file.path(data_dir, "example.xpt"), verbose = TRUE)
+```
+
+## Notes on Argument Forwarding
+
+Additional arguments passed to `read_data()` are forwarded to the underlying reader:
+
+- `data.table::fread()` for CSV / TSV / PSV / TXT
+- `haven::read_sas()` and `haven::read_xpt()`
+- `arrow::read_parquet()` and `arrow::read_feather()`
+
+Example:
+
+```{r forwarded-args}
+read_data(
+  file.path(data_dir, "example.csv"),
+  select = c("SubjectID", "Value")
+)
+```
+
+## Summary
+
+This vignette demonstrated that `{warprrr}` supports a broad range of data formats through a single, consistent API.
+
+By combining format-aware readers with transparent caching, `read_data()` simplifies data ingestion pipelines while improving
+performance and reproducibility.

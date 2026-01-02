@@ -1,0 +1,265 @@
+---
+title: "Data Formats Supported: warprrr"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Data Formats Supported: warprrr}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(warprrr)
+library(data.table)
+library(fs)
+```
+
+## Introduction
+
+The `{warprrr}` package provides a unified, cached interface for reading a variety of common clinical and analytical data formats.
+This vignette demonstrates **all file formats supported by `read_data()`**, shows how they are written for demonstration purposes,
+and confirms that they can be read through the same interface with automatic caching.
+
+Supported formats:
+
+- Delimited text: **CSV**, **PSV**, **TSV**, **TXT**
+- Columnar storage: **Parquet**, **Feather**
+- Clinical / statistical: **SAS7BDAT**, **XPT**
+
+## Example Dataset
+
+```{r example-data}
+generate_patient_labs_long <- function(
+  n_patients = 10000,
+  visits_per_patient = 15,
+  labs_per_visit = 8
+) {
+  set.seed(123)
+
+  patient_ids <- sprintf("PT%06d", seq_len(n_patients))
+
+  patient_visits <- data.table::CJ(
+    PatientID = patient_ids,
+    VisitNumber = seq_len(visits_per_patient)
+  )
+
+  patient_visits[, VisitDate := as.Date("2020-01-01") +
+                   cumsum(sample(7:60, .N, TRUE)),
+                 by = PatientID]
+
+  lab_tests <- c(
+    "Glucose", "Hemoglobin", "WBC", "Platelets",
+    "Creatinine", "ALT", "AST", "BUN"
+  )
+
+  dt <- data.table::CJ(
+    PatientID = patient_visits$PatientID,
+    VisitNumber = patient_visits$VisitNumber,
+    LabTest = lab_tests[seq_len(labs_per_visit)]
+  )
+
+  dt <- patient_visits[dt, on = .(PatientID, VisitNumber)]
+
+  dt[, LabValue := data.table::fcase(
+    LabTest == "Glucose",      round(rnorm(.N, 95, 20), 1),
+    LabTest == "Hemoglobin",  round(rnorm(.N, 14, 2), 1),
+    LabTest == "WBC",         round(rnorm(.N, 7.5, 2.5), 2),
+    LabTest == "Platelets",  round(rnorm(.N, 250, 60), 0),
+    LabTest == "Creatinine", round(rnorm(.N, 1.0, 0.3), 2),
+    LabTest == "ALT",         round(rnorm(.N, 25, 15), 0),
+    LabTest == "AST",         round(rnorm(.N, 28, 12), 0),
+    LabTest == "BUN",         round(rnorm(.N, 15, 5), 1)
+  )]
+
+  dt[, Unit := data.table::fcase(
+    LabTest == "Glucose",      "mg/dL",
+    LabTest == "Hemoglobin",  "g/dL",
+    LabTest == "WBC",         "10^3/uL",
+    LabTest == "Platelets",  "10^3/uL",
+    LabTest == "Creatinine", "mg/dL",
+    LabTest %in% c("ALT", "AST"), "U/L",
+    LabTest == "BUN",         "mg/dL"
+  )]
+
+  data.table::setorder(dt, PatientID, VisitDate, LabTest)
+  dt
+}
+```
+
+## Timing Helper
+
+```{r timing-helper}
+time_code <- function(expr, message = "") {
+  start <- Sys.time()
+  eval(expr)
+  elapsed <- as.numeric(difftime(Sys.time(), start, units = "secs"))
+  msg_prefix <- if (nzchar(message)) paste("to", message) else ""
+  cat("Time taken", msg_prefix, ":", sprintf("%.2f secs", elapsed), "\n")
+  invisible(round(elapsed, 2))
+}
+```
+
+```{r generate-data}
+dt <- generate_patient_labs_long(
+  n_patients = 100,
+  visits_per_patient = 15,
+  labs_per_visit = 8
+)
+```
+
+## Output Directory
+
+```{r output-dir}
+data_dir <- file.path(tempdir(), "warprrr-formats")
+dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
+
+data_dir
+```
+
+## Writing Source Files
+
+### Delimited Text Files
+
+```{r write-delimited}
+fwrite(dt, file.path(data_dir, "example.csv"))
+fwrite(dt, file.path(data_dir, "example.tsv"), sep = "\t")
+fwrite(dt, file.path(data_dir, "example.psv"), sep = "|")
+fwrite(dt, file.path(data_dir, "example.txt"), sep = ",")
+```
+
+### Columnar Formats
+
+```{r write-columnar}
+arrow::write_parquet(dt, file.path(data_dir, "example.parquet"))
+arrow::write_feather(dt, file.path(data_dir, "example.feather"))
+```
+
+### Clinical / Statistical Formats
+
+```{r write-clinical}
+haven::write_sas(dt, file.path(data_dir, "example.sas7bdat"))
+haven::write_xpt(dt, file.path(data_dir, "example.xpt"))
+```
+
+## Reading with `read_data()`
+
+All formats are read using the same `read_data()` interface. The first read populates the cache; subsequent reads reuse it
+unless the source file changes.
+
+### CSV
+
+```{r read-csv}
+time_code({
+  read_data(file.path(data_dir, "example.csv"), verbose = TRUE)
+}, "Reading csv 1st time")
+time_code({
+  read_data(file.path(data_dir, "example.csv"), verbose = TRUE)
+}, "Reading same csv 2nd time")
+```
+
+### TSV
+
+```{r read-tsv}
+time_code({
+  read_data(file.path(data_dir, "example.tsv"), verbose = TRUE)
+}, "Reading txt 1st time")
+time_code({
+  read_data(file.path(data_dir, "example.tsv"), verbose = TRUE)
+}, "Reading same txt 2nd time")
+```
+
+### PSV
+
+```{r read-psv}
+time_code({
+  read_data(file.path(data_dir, "example.psv"), verbose = TRUE)
+}, "Reading psv 1st time")
+time_code({
+  read_data(file.path(data_dir, "example.psv"), verbose = TRUE)
+}, "Reading same psv 2nd time")
+```
+
+### TXT
+
+```{r read-txt}
+time_code({
+  read_data(file.path(data_dir, "example.txt"), verbose = TRUE)
+}, "Reading txt 1st time")
+time_code({
+  read_data(file.path(data_dir, "example.txt"), verbose = TRUE)
+}, "Reading same txt 2nd time")
+```
+
+### Parquet
+
+```{r read-parquet}
+time_code({
+  read_data(file.path(data_dir, "example.parquet"), verbose = TRUE)
+}, "Reading parquet 1st time")
+time_code({
+  read_data(file.path(data_dir, "example.parquet"), verbose = TRUE)
+}, "Reading same parquet 2nd time")
+```
+
+### Feather
+
+```{r read-feather}
+time_code({
+  read_data(file.path(data_dir, "example.feather"), verbose = TRUE)
+}, "Reading feather 1st time")
+time_code({
+  read_data(file.path(data_dir, "example.feather"), verbose = TRUE)
+}, "Reading same feather 2nd time")
+```
+
+### SAS7BDAT
+
+```{r read-sas}
+time_code({
+  read_data(file.path(data_dir, "example.sas7bdat"), verbose = TRUE)
+}, "Reading sas 1st time")
+time_code({
+  read_data(file.path(data_dir, "example.sas7bdat"), verbose = TRUE)
+}, "Reading same sas 2nd time")
+```
+
+### XPT
+
+```{r read-xpt}
+time_code({
+  read_data(file.path(data_dir, "example.xpt"), verbose = TRUE)
+}, "Reading xpt 1st time")
+time_code({
+  read_data(file.path(data_dir, "example.xpt"), verbose = TRUE)
+}, "Reading same xpt 2nd time")
+```
+
+## Notes on Argument Forwarding
+
+Additional arguments passed to `read_data()` are forwarded to the underlying reader:
+
+- `data.table::fread()` for CSV / TSV / PSV / TXT
+- `haven::read_sas()` and `haven::read_xpt()`
+- `arrow::read_parquet()` and `arrow::read_feather()`
+
+Example:
+
+```{r forwarded-args}
+read_data(
+  file.path(data_dir, "example.csv"),
+  select = c("SubjectID", "Value")
+)
+```
+
+## Summary
+
+This vignette demonstrated that `{warprrr}` supports a broad range of data formats through a single, consistent API.
+
+By combining format-aware readers with transparent caching, `read_data()` simplifies data ingestion pipelines while improving
+performance and reproducibility.

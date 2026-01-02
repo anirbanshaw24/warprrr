@@ -26,4 +26,6 @@ navbar:
     menu:
     - text: Simple Examples
       href: articles/simple_example.html
+    - text: Data Formats Supported
+      href: articles/data_formats_supported.html
 url: https://github.com/anirbanshaw24/warprrr

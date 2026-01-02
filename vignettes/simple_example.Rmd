@@ -22,113 +22,174 @@ library(testthat)
 
 ## Introduction
 
-The `warprrr` package provides a caching layer for data files of various formats such as CSV, Parquet, and SAS. It ensures reproducible access to data while maintaining file integrity and efficient caching.
+The `{warprrr}` package provides a transparent caching layer for reading large data files in common clinical and analytical formats (for example SAS, XPT, CSV, and Parquet).
 
-This vignette demonstrates **basic usage**, showing how to create a `warprrr` object, manage caches, and perform some checks.
+Its primary goals are:
 
-## Creating a warprrr Object
+- **Reproducibility**: ensure that the same source file always resolves to the same cached artifact unless the file changes.
+- **Performance**: avoid repeated expensive reads of large binary files.
+- **Integrity**: detect changes in source files and invalidate caches automatically.
 
-```{r create-object}
-# Create temporary directories and files for demonstration
-cache_dir <- tempfile()
-dir_create(cache_dir)
-temp_csv <- tempfile(fileext = ".csv")
+This vignette demonstrates basic usage, focusing on reading SAS and XPT files and observing cache behavior.
 
-# Save example data
-write.csv(mtcars, temp_csv, row.names = FALSE)
+## Generating Example Clinical Data
 
-# Initialize warprrr object
-dc <- read_data(data_path = temp_csv, cache_path = cache_dir)
-dc
+```{r data-generator}
+generate_patient_labs_long <- function(
+  n_patients = 10000,
+  visits_per_patient = 15,
+  labs_per_visit = 8
+) {
+  set.seed(123)
+
+  patient_ids <- sprintf("PT%06d", seq_len(n_patients))
+
+  patient_visits <- data.table::CJ(
+    PatientID = patient_ids,
+    VisitNumber = seq_len(visits_per_patient)
+  )
+
+  patient_visits[, VisitDate := as.Date("2020-01-01") +
+                   cumsum(sample(7:60, .N, TRUE)),
+                 by = PatientID]
+
+  lab_tests <- c(
+    "Glucose", "Hemoglobin", "WBC", "Platelets",
+    "Creatinine", "ALT", "AST", "BUN"
+  )
+
+  dt <- data.table::CJ(
+    PatientID = patient_visits$PatientID,
+    VisitNumber = patient_visits$VisitNumber,
+    LabTest = lab_tests[seq_len(labs_per_visit)]
+  )
+
+  dt <- patient_visits[dt, on = .(PatientID, VisitNumber)]
+
+  dt[, LabValue := data.table::fcase(
+    LabTest == "Glucose",      round(rnorm(.N, 95, 20), 1),
+    LabTest == "Hemoglobin",  round(rnorm(.N, 14, 2), 1),
+    LabTest == "WBC",         round(rnorm(.N, 7.5, 2.5), 2),
+    LabTest == "Platelets",  round(rnorm(.N, 250, 60), 0),
+    LabTest == "Creatinine", round(rnorm(.N, 1.0, 0.3), 2),
+    LabTest == "ALT",         round(rnorm(.N, 25, 15), 0),
+    LabTest == "AST",         round(rnorm(.N, 28, 12), 0),
+    LabTest == "BUN",         round(rnorm(.N, 15, 5), 1)
+  )]
+
+  dt[, Unit := data.table::fcase(
+    LabTest == "Glucose",      "mg/dL",
+    LabTest == "Hemoglobin",  "g/dL",
+    LabTest == "WBC",         "10^3/uL",
+    LabTest == "Platelets",  "10^3/uL",
+    LabTest == "Creatinine", "mg/dL",
+    LabTest %in% c("ALT", "AST"), "U/L",
+    LabTest == "BUN",         "mg/dL"
+  )]
+
+  data.table::setorder(dt, PatientID, VisitDate, LabTest)
+  dt
+}
 ```
 
-### Checking Cache Directory
-
-```{r cache-check}
-# The cache directory should exist
-fs::dir_exists(dc$warprrr@cache_path)
-```
-
-### File Info
-
-```{r file-info}
-# Get metadata about the source file
-dc$warprrr@file_info
-```
-
-## Accessing the Data Object
-
-```{r view-data}
-# Read the underlying data as data.table
-obj <- dc$data
-head(obj)
-```
-
-```{r read-data}
-# Read the underlying data as data.table
-obj <- dc$warprrr@data_object
-head(obj)
-```
-
-### Using get_data()
-
-```{r get-data-example}
-# Use get_data() for caching workflow
-cached_data <- warprrr:::get_data(dc$warprrr, verbose = FALSE)
-cached_data
-```
-
-## Cache Hash and Cache File
-
-```{r cache-hash}
-# Unique hash based on the file content
-dc$warprrr@cache_hash
-
-# Cached file path
-dc$warprrr@cache_full_file_path
-```
-
-## Handling Multiple Formats
-
-`warprrr` supports CSV, Parquet, and SAS7BDAT (if `haven` is installed).
-
-```{r parquet-example, eval = FALSE}
-# Example: reading parquet files
-temp_parquet <- tempfile(fileext = ".parquet")
-arrow::write_parquet(mtcars, temp_parquet)
-dc_parquet <- read_data(data_path = temp_parquet)
-head(dc_parquet$data)
-```
-
-## Error Handling
-
-```{r error-example}
-# Unsupported file format
-temp_file_unsupported <- tempfile(fileext = ".tar")
-writeLines("Unsupported file format", temp_file_unsupported)
-
-expect_error(
-  dc_error <- read_data(data_path = temp_file_unsupported),
-  "tar files are not supported"
+```{r generate-data}
+lab_data <- generate_patient_labs_long(
+  n_patients = 100,
+  visits_per_patient = 15,
+  labs_per_visit = 8
 )
+
+dim(lab_data)
+head(lab_data, 20)
 ```
 
-## Cleanup
+## Timing Helper
 
-```{r cleanup, include = FALSE}
-fs::dir_delete(cache_dir)
-fs::file_delete(temp_csv)
-fs::file_delete(temp_file_unsupported)
+```{r timing-helper}
+time_code <- function(expr, message = "") {
+  start <- Sys.time()
+  eval(expr)
+  elapsed <- as.numeric(difftime(Sys.time(), start, units = "secs"))
+  msg_prefix <- if (nzchar(message)) paste("to", message) else ""
+  cat("Time taken", msg_prefix, ":", sprintf("%.2f secs", elapsed), "\n")
+  invisible(round(elapsed, 2))
+}
 ```
 
-## Conclusion
+## Writing and Reading Source Files
 
-This vignette illustrated:
-- Creating a `warprrr` object
-- Reading and caching data
-- Inspecting file metadata
-- Handling multiple formats
-- Using utility functions
+```{r write-sas}
 
-`warprrr` simplifies **reproducible data management** while ensuring cache integrity and efficiency.
+data_dir <- file.path(tempdir(), "warprrr-vignette")
+dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
 
+time_code({
+  haven::write_sas(
+    lab_data,
+    file.path(data_dir, "lab_data.sas7bdat")
+  )
+}, message = "write a .sas7bdat file")
+```
+
+```{r read-sas-direct}
+time_code({
+  haven::read_sas(
+    file.path(data_dir, "lab_data.sas7bdat")
+  )
+}, message = "read the same .sas7bdat file directly")
+```
+
+```{r write-xpt}
+time_code({
+  haven::write_xpt(
+    lab_data,
+    file.path(data_dir, "lab_data.xpt")
+  )
+}, message = "write an .xpt file")
+```
+
+```{r read-xpt-direct}
+time_code({
+  haven::read_xpt(
+    file.path(data_dir, "lab_data.xpt")
+  )
+}, message = "read the same .xpt file directly")
+```
+
+## Reading with warprrr
+
+```{r warprrr-first-sas}
+time_code({
+  warprrr::read_data(
+    file.path(data_dir, "lab_data.sas7bdat")
+  )
+}, message = "read an SAS file with {warprrr} (initial read)")
+```
+
+```{r warprrr-second-sas}
+time_code({
+  warprrr::read_data(
+    file.path(data_dir, "lab_data.sas7bdat")
+  )
+}, message = "read the same SAS file again from cache")
+```
+
+```{r warprrr-first-xpt}
+time_code({
+  warprrr::read_data(
+    file.path(data_dir, "lab_data.xpt")
+  )
+}, message = "read an XPT file with {warprrr} (initial read)")
+```
+
+```{r warprrr-second-xpt}
+time_code({
+  warprrr::read_data(
+    file.path(data_dir, "lab_data.xpt")
+  )
+}, message = "read the same XPT file again from cache")
+```
+
+## Summary
+
+This vignette demonstrated how `{warprrr}` provides a drop-in, high-performance caching layer for large clinical data files with automatic cache reuse and invalidation.
