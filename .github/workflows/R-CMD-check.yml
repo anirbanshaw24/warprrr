@@ -57,6 +57,15 @@ jobs:
         if: matrix.config.os == 'macOS-latest'
         run: brew install pandoc
 
+      - name: Install gettext (macOS)
+        if: matrix.config.os == 'macOS-latest'
+        run: brew install gettext
+
+      - name: Symlink gettext (libintl.h) to /usr/local/include  # Required for clang
+        if: matrix.config.os == 'macOS-latest'
+        run: |
+          brew link gettext --force
+
       # ===== R Setup =====
       - name: Install R
         uses: r-lib/actions/setup-r@v2
