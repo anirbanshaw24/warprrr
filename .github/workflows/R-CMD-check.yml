@@ -137,15 +137,6 @@ jobs:
             renv::restore(prompt = FALSE)
           }
 
-      # ===== Install Critical Packages from Source (Ubuntu only) =====
-      - name: 🔨 Rebuild curl & openssl from source (Ubuntu)
-        if: matrix.config.os == 'ubuntu-latest'
-        run: |
-          Rscript -e 'renv::install("openssl", type = "source", repos = "https://cloud.r-project.org", prompt = FALSE, rebuild = TRUE)'
-          Rscript -e 'renv::install("curl", type = "source", repos = "https://cloud.r-project.org", prompt = FALSE, rebuild = TRUE)'
-          Rscript -e 'renv::install("arrow", type = "source", repos = "https://cloud.r-project.org", prompt = FALSE, rebuild = TRUE)'
-          Rscript -e 'renv::install("stringi", type = "source", repos = "https://cloud.r-project.org", prompt = FALSE, rebuild = TRUE)'
-
       # ===== Install Package Dependencies =====
       - name: Install dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
@@ -156,6 +147,15 @@ jobs:
           extra-packages: |
             any::rcmdcheck
             any::devtools
+
+      # ===== Install Critical Packages from Source (Ubuntu only) =====
+      - name: 🔨 Rebuild curl & openssl from source (Ubuntu)
+        if: matrix.config.os == 'ubuntu-latest'
+        run: |
+          Rscript -e 'renv::install("openssl", type = "source", repos = "https://cloud.r-project.org", prompt = FALSE, rebuild = TRUE)'
+          Rscript -e 'renv::install("curl", type = "source", repos = "https://cloud.r-project.org", prompt = FALSE, rebuild = TRUE)'
+          Rscript -e 'renv::install("arrow", type = "source", repos = "https://cloud.r-project.org", prompt = FALSE, rebuild = TRUE)'
+          Rscript -e 'renv::install("stringi", type = "source", repos = "https://cloud.r-project.org", prompt = FALSE, rebuild = TRUE)'
 
       - name: ICU version check (Ubuntu)
         if: matrix.config.os == 'ubuntu-latest'
