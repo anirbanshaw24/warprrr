@@ -24,8 +24,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # ===== Windows Setup =====
-      - name: Setup Windows execution policy
+      # ===== System Dependencies =====
+      - name: Install system dependencies (Windows)
         if: matrix.config.os == 'windows-latest'
         run: |
           Set-ExecutionPolicy Bypass -Scope Process -Force
@@ -33,39 +33,21 @@ jobs:
           choco install pandoc -y
           choco install openssl -y
 
-      # ===== Ubuntu Setup =====
-      - name: 🧱 Install system dependencies (Ubuntu)
+      - name: Install system dependencies (Ubuntu)
         if: matrix.config.os == 'ubuntu-latest'
-        shell: bash
         run: |
-          set -euxo pipefail
           sudo apt-get update -y
           sudo apt-get install -y \
-            libssl-dev \
-            libcurl4-openssl-dev \
-            libxml2-dev \
-            libharfbuzz-dev \
-            libfribidi-dev \
-            libfreetype6-dev \
-            libpng-dev \
-            libtiff5-dev \
-            libjpeg-dev \
-            libicu-dev
+            libssl-dev libcurl4-openssl-dev libxml2-dev \
+            libharfbuzz-dev libfribidi-dev libfreetype6-dev \
+            libpng-dev libtiff5-dev libjpeg-dev libicu-dev
 
-      # ===== macOS Setup =====
-      - name: Setup dependencies (macOS)
+      - name: Install system dependencies (macOS)
         if: matrix.config.os == 'macOS-latest'
         run: |
           brew install pandoc gettext
-
           mkdir -p ~/.R
-
-          if [[ $(uname -m) == 'arm64' ]]; then
-            GETTEXT_PREFIX="/opt/homebrew/opt/gettext"
-          else
-            GETTEXT_PREFIX="/usr/local/opt/gettext"
-          fi
-
+          GETTEXT_PREFIX=$([[ $(uname -m) == 'arm64' ]] && echo "/opt/homebrew/opt/gettext" || echo "/usr/local/opt/gettext")
           cat <<EOF >> ~/.R/Makevars
           CPPFLAGS += -I${GETTEXT_PREFIX}/include
           LDFLAGS  += -L${GETTEXT_PREFIX}/lib
@@ -78,69 +60,22 @@ jobs:
           r-version: ${{ matrix.config.r }}
           use-public-rspm: false
 
-      # ===== Clean Cache (Ubuntu only) =====
-      - name: 🧹 Remove stale renv cache (Ubuntu)
-        if: matrix.config.os == 'ubuntu-latest'
-        run: |
-          rm -rf ~/.cache/R/renv
-          rm -rf ~/.R/library
-          rm -rf renv/library
-
-      - name: 🔒 Disable binaries completely (Linux)
+      # ===== Configure Source Builds (Ubuntu) =====
+      - name: Configure source builds (Ubuntu)
         if: matrix.config.os == 'ubuntu-latest'
         run: |
           mkdir -p ~/.R
           cat <<EOF >> ~/.Rprofile
-          options(
-            pkgType = "source",
-            install.packages.compile.from.source = "always"
-          )
-          Sys.setenv(
-            RENV_CONFIG_PAK_ENABLED = "FALSE",
-            RENV_CONFIG_BINARY_REPOS = ""
-          )
+          options(pkgType = "source", install.packages.compile.from.source = "always")
           EOF
-
-      # ===== Force Source Builds (Ubuntu only) =====
-      - name: 🔧 Force source builds on Linux
-        if: matrix.config.os == 'ubuntu-latest'
-        run: |
-          mkdir -p ~/.R
-          echo 'options(pkgType = "source")' >> ~/.Rprofile
           echo 'MAKEFLAGS=-j2' > ~/.R/Makevars
 
-      - name: Configure pak for source builds (Ubuntu)
-        if: matrix.config.os == 'ubuntu-latest'
-        run: |
-          echo "PKG_BUILD_BINARY=false" >> $GITHUB_ENV
-          echo "_R_CHECK_FORCE_SUGGESTS_=false" >> $GITHUB_ENV
-
-      # ===== renv Restore =====
-      - name: 📋 Clean renv
+      # ===== Restore renv =====
+      - name: Restore renv
         shell: Rscript {0}
         run: |
           if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
-
-          # On Ubuntu, purge cache and force rebuild
-          if (Sys.info()["sysname"] == "Linux") {
-            renv::purge("curl", prompt = FALSE)
-            renv::purge("openssl", prompt = FALSE)
-            renv::remove("stringi")
-            renv::purge("stringi", prompt = FALSE)
-            unlink(file.path(.libPaths()[1], "stringi"), recursive=TRUE, force=TRUE)
-          }
-
-      - name: 📋 Restore renv (force rebuild on Ubuntu)
-        shell: Rscript {0}
-        run: |
-          if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
-
-          # On Ubuntu, purge cache and force rebuild
-          if (Sys.info()["sysname"] == "Linux") {
-            renv::restore(prompt = FALSE, rebuild = TRUE)
-          } else {
-            renv::restore(prompt = FALSE)
-          }
+          renv::restore(prompt = FALSE)
 
       # ===== Install Package Dependencies =====
       - name: Install dependencies
@@ -148,47 +83,22 @@ jobs:
         with:
           cache-version: 3
           needs: check
-          pak-version: 'stable'
           extra-packages: |
             any::rcmdcheck
             any::devtools
 
-      # ===== Install Critical Packages from Source (Ubuntu only) =====
-      - name: 🔨 Rebuild curl & openssl from source (Ubuntu)
-        if: matrix.config.os == 'ubuntu-latest'
-        run: |
-          Rscript -e 'renv::install("openssl", type = "source", repos = "https://cloud.r-project.org", prompt = FALSE, rebuild = TRUE)'
-          Rscript -e 'renv::install("curl", type = "source", repos = "https://cloud.r-project.org", prompt = FALSE, rebuild = TRUE)'
-          Rscript -e 'renv::install("arrow", type = "source", repos = "https://cloud.r-project.org", prompt = FALSE, rebuild = TRUE)'
-          Rscript -e 'renv::install("stringi", type = "source", repos = "https://cloud.r-project.org", prompt = FALSE, rebuild = TRUE)'
-
-      - name: ICU version check (Ubuntu)
-        if: matrix.config.os == 'ubuntu-latest'
-        run: |
-          ldconfig -p | grep icui18n
-          dpkg -l | grep libicu
-
-      # ===== Force stringi rebuild AFTER pak (Ubuntu only) =====
-      - name: 🔨 Rebuild stringi after pak (Ubuntu)
+      # ===== Fix stringi for Ubuntu =====
+      - name: Rebuild stringi (Ubuntu)
         if: matrix.config.os == 'ubuntu-latest'
         run: |
           Rscript -e 'remove.packages("stringi"); install.packages("stringi", type = "source", repos = "https://cloud.r-project.org")'
 
-      # ===== Document Package =====
-      - name: Run devtools::document()
-        shell: Rscript {0}
-        run: |
-          source(".Rprofile")
-          print("======================================================")
-          print(list.files(fs::path(.libPaths()[1], "stringi", "libs")))
-          print(.libPaths()[1])
-          print("======================================================")
-          devtools::document()
+      # ===== Document & Check =====
+      - name: Document package
+        run: Rscript -e 'devtools::document()'
 
-      # ===== R CMD check =====
       - name: R CMD check
         uses: r-lib/actions/check-r-package@v2
         with:
           args: 'c("--no-manual", "--as-cran")'
           error-on: '"warning"'
-          check-dir: '"check"'
