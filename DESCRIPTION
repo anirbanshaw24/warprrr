@@ -1,14 +1,14 @@
 Package: warprrr
 Title: S7-Powered Data Import, Wrangling, and Caching Framework
 Version: 0.1.0
-Date: 2026-01-02
+Date: 2026-01-08
 Authors@R:
     person("Anirban", "Shaw", , "anirbanshaw24@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-4021-513X"))
 Description: Provides an extensible S7 class and utility functions for
-    efficient and reproducible data loading, wrangling, and caching.
-    Supports streamlined reading of common biomedical and tabular file
-    formats (CSV, TSV, PSV, TXT, SAS XPT/sas7bdat, Parquet, Feather), with
+    efficient and reproducible data loading and caching.  Supports
+    streamlined reading of common biomedical and tabular file formats
+    (CSV, TSV, PSV, TXT, SAS XPT/sas7bdat, Parquet, Feather), with
     flexible argument passing to backend readers ('data.table', 'haven',
     'arrow'). Implements automatic file/directory validation and
     file-type-based selection, plus transparent caching in Feather format
