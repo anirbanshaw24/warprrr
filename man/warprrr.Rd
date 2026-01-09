@@ -4,11 +4,7 @@
 \alias{warprrr}
 \title{warprrr S7 Class for Data Wrangling and Caching}
 \usage{
-warprrr(
-  data_path = character(0),
-  read_fun_args = list(),
-  cache_path = "/home/shawa11/.cache/R/warprrr"
-)
+warprrr(data_path, read_fun_args = list(), cache_path = NULL)
 }
 \arguments{
 \item{data_path}{Path to the input data file. Supported formats include
@@ -21,9 +17,7 @@ reader function. CSV, PSV, TSV, and TXT files are read using
 Parquet and Feather files are read using
 \code{arrow::read_parquet()} and \code{arrow::read_feather()}.}
 
-\item{cache_path}{Path to the cache directory. Defaults to
-\code{tools::R_user_dir("warprrr", which = "cache")}, which resolves to
-an OS-specific, user-writable cache location.}
+\item{cache_path}{Path to the cache directory.}
 }
 \description{
 Defines an S7 class that handles data loading and on-disk caching

@@ -4,12 +4,7 @@
 \alias{read_data}
 \title{Title}
 \usage{
-read_data(
-  data_path,
-  cache_path = file.path(tools::R_user_dir("warprrr", which = "cache")),
-  verbose = FALSE,
-  ...
-)
+read_data(data_path, cache_path = NULL, verbose = FALSE, ...)
 }
 \arguments{
 \item{data_path}{The path to data. csv, psv, tsv, parquet, feather, txt,

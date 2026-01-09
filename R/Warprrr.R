@@ -14,9 +14,7 @@
 #'   Parquet and Feather files are read using
 #'   \code{arrow::read_parquet()} and \code{arrow::read_feather()}.
 #'
-#' @param cache_path Path to the cache directory. Defaults to
-#'   \code{tools::R_user_dir("warprrr", which = "cache")}, which resolves to
-#'   an OS-specific, user-writable cache location.
+#' @param cache_path Path to the cache directory.
 #'
 #' @importFrom S7 new_class class_character new_property new_generic
 #'   S7_dispatch method
@@ -36,7 +34,6 @@ warprrr <- S7::new_class(
     read_fun_args = S7::class_list,
     cache_path = S7::new_property(
       class = S7::class_character,
-      default = file.path(tools::R_user_dir("warprrr", which = "cache")),
       validator = function(value) {
         if (!fs::is_dir(value)) {
           fs::dir_create(value)
@@ -169,6 +166,21 @@ warprrr <- S7::new_class(
     if (!fs::file_exists(self@data_path)) {
       "@data_path MUST be a valid path to file that exists."
     }
+  },
+  constructor = function(
+    data_path,
+    read_fun_args = list(),
+    cache_path = NULL) {
+    if (is.null(cache_path)) {
+      cache_path <- file.path(tools::R_user_dir("warprrr", which = "cache"))
+    }
+
+    S7::new_object(
+      S7::S7_object(),
+      data_path = data_path,
+      cache_path = cache_path,
+      read_fun_args = read_fun_args
+    )
   }
 )
 
