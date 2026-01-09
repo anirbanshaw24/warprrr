@@ -233,14 +233,14 @@ XPT files and observing cache behavior.</p>
 <span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span></span>
 <span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
 <span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span>
-<span><span class="co">#&gt; Time taken to write a .sas7bdat file : 8.75 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; Time taken to write a .sas7bdat file : 8.61 secs</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu">haven</span><span class="fu">::</span><span class="fu"><a href="https://haven.tidyverse.org/reference/read_sas.html" class="external-link">read_sas</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"lab_data.sas7bdat"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span>, message <span class="op">=</span> <span class="st">"read the same .sas7bdat file directly"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Time taken to read the same .sas7bdat file directly : 17.29 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; Time taken to read the same .sas7bdat file directly : 17.07 secs</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu">haven</span><span class="fu">::</span><span class="fu"><a href="https://haven.tidyverse.org/reference/read_xpt.html" class="external-link">write_xpt</a></span><span class="op">(</span></span>
@@ -248,14 +248,14 @@ XPT files and observing cache behavior.</p>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"lab_data.xpt"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span>, message <span class="op">=</span> <span class="st">"write an .xpt file"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Time taken to write an .xpt file : 9.90 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; Time taken to write an .xpt file : 9.95 secs</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu">haven</span><span class="fu">::</span><span class="fu"><a href="https://haven.tidyverse.org/reference/read_xpt.html" class="external-link">read_xpt</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"lab_data.xpt"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span>, message <span class="op">=</span> <span class="st">"read the same .xpt file directly"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Time taken to read the same .xpt file directly : 20.57 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; Time taken to read the same .xpt file directly : 21.36 secs</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="reading-with-warprrr">Reading with warprrr<a class="anchor" aria-label="anchor" href="#reading-with-warprrr"></a>
@@ -266,7 +266,7 @@ XPT files and observing cache behavior.</p>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"lab_data.sas7bdat"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span>, message <span class="op">=</span> <span class="st">"read an SAS file with {warprrr} (initial read)"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Time taken to read an SAS file with {warprrr} (initial read) : 19.80 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; Time taken to read an SAS file with {warprrr} (initial read) : 19.75 secs</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu">warprrr</span><span class="fu">::</span><span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span></span>
@@ -280,7 +280,7 @@ XPT files and observing cache behavior.</p>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"lab_data.xpt"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span>, message <span class="op">=</span> <span class="st">"read an XPT file with {warprrr} (initial read)"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Time taken to read an XPT file with {warprrr} (initial read) : 23.45 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; Time taken to read an XPT file with {warprrr} (initial read) : 24.64 secs</span></span></code></pre></div>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu">warprrr</span><span class="fu">::</span><span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span></span>
