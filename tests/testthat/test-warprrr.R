@@ -269,6 +269,8 @@ testthat::describe("warprrr utility functions", {
       Sys.sleep(0.1)
     })
     expect_type(result, "double")
+    print("=====================================")
+    print(result)
     expect_true(result >= 0.1)
   })
 
