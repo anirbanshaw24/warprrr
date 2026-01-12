@@ -168,9 +168,9 @@ warprrr <- S7::new_class(
     }
   },
   constructor = function(
-    data_path,
-    read_fun_args = list(),
-    cache_path = NULL) {
+      data_path,
+      read_fun_args = list(),
+      cache_path = NULL) {
     if (is.null(cache_path)) {
       cache_path <- file.path(tools::R_user_dir("warprrr", which = "cache"))
     }
