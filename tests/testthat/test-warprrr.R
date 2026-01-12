@@ -269,7 +269,7 @@ testthat::describe("warprrr utility functions", {
       Sys.sleep(0.1)
     })
     expect_type(result, "double")
-    expect_true(result == 0.1)
+    expect_true(result >= 0.1)
   })
 
   it("warprrr returns formatted timestamp", {
