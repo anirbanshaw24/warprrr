@@ -23,8 +23,11 @@ utils::globalVariables(
 #'
 read_data <- function(
     data_path,
-    cache_path = file.path(tools::R_user_dir("warprrr", which = "cache")),
+    cache_path = NULL,
     verbose = FALSE, ...) {
+  if (is.null(cache_path)) {
+    cache_path <- file.path(tools::R_user_dir("warprrr", which = "cache"))
+  }
   read_fun_args <- list(...)
   warpr <- warprrr( # nolint
     data_path = data_path,

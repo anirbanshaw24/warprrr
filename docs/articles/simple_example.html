@@ -168,37 +168,37 @@ XPT files and observing cache behavior.</p>
 <span><span class="op">}</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lab_data</span> <span class="op">&lt;-</span> <span class="fu">generate_patient_labs_long</span><span class="op">(</span></span>
-<span>  n_patients <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  n_patients <span class="op">=</span> <span class="fl">30</span>,</span>
 <span>  visits_per_patient <span class="op">=</span> <span class="fl">15</span>,</span>
 <span>  labs_per_visit <span class="op">=</span> <span class="fl">8</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">lab_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 18000000        6</span></span>
+<span><span class="co">#&gt; [1] 1620000       6</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">lab_data</span>, <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Key: &lt;PatientID, VisitNumber&gt;</span></span>
 <span><span class="co">#&gt;     PatientID VisitNumber  VisitDate LabTest LabValue   Unit</span></span>
 <span><span class="co">#&gt;        &lt;char&gt;       &lt;int&gt;     &lt;Date&gt;  &lt;char&gt;    &lt;num&gt; &lt;char&gt;</span></span>
-<span><span class="co">#&gt;  1:  PT000001           1 2020-02-07     ALT       10    U/L</span></span>
-<span><span class="co">#&gt;  2:  PT000001           1 2020-02-07     ALT       -2    U/L</span></span>
-<span><span class="co">#&gt;  3:  PT000001           1 2020-02-07     ALT        2    U/L</span></span>
-<span><span class="co">#&gt;  4:  PT000001           1 2020-02-07     ALT       33    U/L</span></span>
-<span><span class="co">#&gt;  5:  PT000001           1 2020-02-07     ALT       30    U/L</span></span>
-<span><span class="co">#&gt;  6:  PT000001           1 2020-02-07     ALT       28    U/L</span></span>
-<span><span class="co">#&gt;  7:  PT000001           1 2020-02-07     ALT       30    U/L</span></span>
-<span><span class="co">#&gt;  8:  PT000001           1 2020-02-07     ALT       15    U/L</span></span>
-<span><span class="co">#&gt;  9:  PT000001           1 2020-02-07     ALT       46    U/L</span></span>
-<span><span class="co">#&gt; 10:  PT000001           1 2020-02-07     ALT       36    U/L</span></span>
-<span><span class="co">#&gt; 11:  PT000001           1 2020-02-07     ALT      -11    U/L</span></span>
-<span><span class="co">#&gt; 12:  PT000001           1 2020-02-07     ALT       37    U/L</span></span>
-<span><span class="co">#&gt; 13:  PT000001           1 2020-02-07     ALT       13    U/L</span></span>
-<span><span class="co">#&gt; 14:  PT000001           1 2020-02-07     ALT       13    U/L</span></span>
-<span><span class="co">#&gt; 15:  PT000001           1 2020-02-07     ALT       10    U/L</span></span>
-<span><span class="co">#&gt; 16:  PT000001           1 2020-02-07     ALT      -16    U/L</span></span>
-<span><span class="co">#&gt; 17:  PT000001           1 2020-02-07     ALT       22    U/L</span></span>
-<span><span class="co">#&gt; 18:  PT000001           1 2020-02-07     ALT       36    U/L</span></span>
+<span><span class="co">#&gt;  1:  PT000001           1 2020-02-07     ALT       35    U/L</span></span>
+<span><span class="co">#&gt;  2:  PT000001           1 2020-02-07     ALT       20    U/L</span></span>
+<span><span class="co">#&gt;  3:  PT000001           1 2020-02-07     ALT       19    U/L</span></span>
+<span><span class="co">#&gt;  4:  PT000001           1 2020-02-07     ALT       36    U/L</span></span>
+<span><span class="co">#&gt;  5:  PT000001           1 2020-02-07     ALT       42    U/L</span></span>
+<span><span class="co">#&gt;  6:  PT000001           1 2020-02-07     ALT       45    U/L</span></span>
+<span><span class="co">#&gt;  7:  PT000001           1 2020-02-07     ALT       11    U/L</span></span>
+<span><span class="co">#&gt;  8:  PT000001           1 2020-02-07     ALT       36    U/L</span></span>
+<span><span class="co">#&gt;  9:  PT000001           1 2020-02-07     ALT       23    U/L</span></span>
+<span><span class="co">#&gt; 10:  PT000001           1 2020-02-07     ALT        6    U/L</span></span>
+<span><span class="co">#&gt; 11:  PT000001           1 2020-02-07     ALT       40    U/L</span></span>
+<span><span class="co">#&gt; 12:  PT000001           1 2020-02-07     ALT       24    U/L</span></span>
+<span><span class="co">#&gt; 13:  PT000001           1 2020-02-07     ALT       29    U/L</span></span>
+<span><span class="co">#&gt; 14:  PT000001           1 2020-02-07     ALT       14    U/L</span></span>
+<span><span class="co">#&gt; 15:  PT000001           1 2020-02-07     ALT       20    U/L</span></span>
+<span><span class="co">#&gt; 16:  PT000001           1 2020-02-07     ALT       39    U/L</span></span>
+<span><span class="co">#&gt; 17:  PT000001           1 2020-02-07     ALT       26    U/L</span></span>
+<span><span class="co">#&gt; 18:  PT000001           1 2020-02-07     ALT       30    U/L</span></span>
 <span><span class="co">#&gt; 19:  PT000001           1 2020-02-07     ALT       31    U/L</span></span>
-<span><span class="co">#&gt; 20:  PT000001           1 2020-02-07     ALT       10    U/L</span></span>
+<span><span class="co">#&gt; 20:  PT000001           1 2020-02-07     ALT        6    U/L</span></span>
 <span><span class="co">#&gt;     PatientID VisitNumber  VisitDate LabTest LabValue   Unit</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -233,14 +233,14 @@ XPT files and observing cache behavior.</p>
 <span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span></span>
 <span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
 <span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span>
-<span><span class="co">#&gt; Time taken to write a .sas7bdat file : 8.86 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; Time taken to write a .sas7bdat file : 0.79 secs</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu">haven</span><span class="fu">::</span><span class="fu"><a href="https://haven.tidyverse.org/reference/read_sas.html" class="external-link">read_sas</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"lab_data.sas7bdat"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span>, message <span class="op">=</span> <span class="st">"read the same .sas7bdat file directly"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Time taken to read the same .sas7bdat file directly : 17.28 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; Time taken to read the same .sas7bdat file directly : 1.68 secs</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu">haven</span><span class="fu">::</span><span class="fu"><a href="https://haven.tidyverse.org/reference/read_xpt.html" class="external-link">write_xpt</a></span><span class="op">(</span></span>
@@ -248,14 +248,14 @@ XPT files and observing cache behavior.</p>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"lab_data.xpt"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span>, message <span class="op">=</span> <span class="st">"write an .xpt file"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Time taken to write an .xpt file : 10.11 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; Time taken to write an .xpt file : 0.88 secs</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu">haven</span><span class="fu">::</span><span class="fu"><a href="https://haven.tidyverse.org/reference/read_xpt.html" class="external-link">read_xpt</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"lab_data.xpt"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span>, message <span class="op">=</span> <span class="st">"read the same .xpt file directly"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Time taken to read the same .xpt file directly : 21.37 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; Time taken to read the same .xpt file directly : 2.45 secs</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="reading-with-warprrr">Reading with warprrr<a class="anchor" aria-label="anchor" href="#reading-with-warprrr"></a>
@@ -266,28 +266,28 @@ XPT files and observing cache behavior.</p>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"lab_data.sas7bdat"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span>, message <span class="op">=</span> <span class="st">"read an SAS file with {warprrr} (initial read)"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Time taken to read an SAS file with {warprrr} (initial read) : 20.00 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; Time taken to read an SAS file with {warprrr} (initial read) : 1.92 secs</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu">warprrr</span><span class="fu">::</span><span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"lab_data.sas7bdat"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span>, message <span class="op">=</span> <span class="st">"read the same SAS file again from cache"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Time taken to read the same SAS file again from cache : 0.42 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; Time taken to read the same SAS file again from cache : 0.07 secs</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu">warprrr</span><span class="fu">::</span><span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"lab_data.xpt"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span>, message <span class="op">=</span> <span class="st">"read an XPT file with {warprrr} (initial read)"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Time taken to read an XPT file with {warprrr} (initial read) : 24.20 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; Time taken to read an XPT file with {warprrr} (initial read) : 2.28 secs</span></span></code></pre></div>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu">warprrr</span><span class="fu">::</span><span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"lab_data.xpt"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span>, message <span class="op">=</span> <span class="st">"read the same XPT file again from cache"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Time taken to read the same XPT file again from cache : 0.69 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; Time taken to read the same XPT file again from cache : 0.05 secs</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>

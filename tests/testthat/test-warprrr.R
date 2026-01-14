@@ -171,11 +171,6 @@ testthat::describe("warprrr S7 class", {
     time1 <- system.time(get_data(dc, verbose = FALSE))["elapsed"]
     time2 <- system.time(get_data(dc, verbose = FALSE))["elapsed"]
 
-    print("====================================")
-    print(time1)
-    print(time2)
-    print("====================================")
-
     expect_true(time2 < time1 * 2) # At least not slower
   })
 
@@ -271,10 +266,10 @@ testthat::describe("warprrr S7 class", {
 testthat::describe("warprrr utility functions", {
   it("time_taken_precise returns numeric elapsed time", {
     result <- time_taken_precise({
-      Sys.sleep(0.01)
+      Sys.sleep(0.1)
     })
     expect_type(result, "double")
-    expect_true(result >= 0.01)
+    expect_true(result >= 0.1)
   })
 
   it("warprrr returns formatted timestamp", {

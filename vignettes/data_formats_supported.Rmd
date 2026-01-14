@@ -107,7 +107,7 @@ time_code <- function(expr, message = "") {
 
 ```{r generate-data}
 dt <- generate_patient_labs_long(
-  n_patients = 100,
+  n_patients = 30,
   visits_per_patient = 15,
   labs_per_visit = 8
 )
