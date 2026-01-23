@@ -14,7 +14,6 @@
 #'
 #' @return An `fs_path` object (normalized file path) or an empty path
 #'  if missing and `allow_error = FALSE`.
-#' @export
 pkg_path <- function(..., allow_error = FALSE) {
   fs::path(
     system.file(
@@ -62,8 +61,6 @@ dv_log_preffix <- function() {
 #' @importFrom glue glue
 #' @importFrom cli col_br_blue
 #'
-#' @export
-#'
 log_start <- function() {
   cat(
     cli::col_br_blue(
@@ -81,8 +78,6 @@ log_start <- function() {
 #' @importFrom stringr str_flatten
 #' @importFrom glue glue
 #' @importFrom cli col_br_blue
-#'
-#' @export
 #'
 log_end <- function() {
   cat(
@@ -107,7 +102,6 @@ log_end <- function() {
 #'
 #' @importFrom glue glue
 #' @importFrom cli col_br_blue
-#' @export
 inform_glue <- function(..., envir = parent.frame()) {
 
   cat(
@@ -152,28 +146,29 @@ error_glue <- function(..., envir = parent.frame()) {
         "\n\n",
         .envir = envir
       )
-    )
+    ), call = rlang::caller_call(1)
   )
 }
 
 #' @importFrom glue glue
 #' @importFrom cli col_br_yellow
 #'
-warning_glue <- function(...) {
+warning_glue <- function(..., envir = parent.frame()) {
 
   cat(
     cli::col_br_yellow(
       glue::glue(
         "\n{dv_log_preffix()}",
         ...,
-        "\n\n"
+        "\n\n",
+        .envir = envir
       )
     )
   )
 }
 
-system_glue <- function(...) {
+system_glue <- function(..., envir = parent.frame()) {
   system(
-    glue::glue(...)
+    glue::glue(..., .envir = envir)
   )
 }

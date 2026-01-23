@@ -25,12 +25,30 @@
 #' @importFrom data.table fread
 #' @importFrom haven read_sas read_xpt
 #' @importFrom arrow read_parquet read_feather
-#' @export
 warprrr <- S7::new_class(
   "warprrr",
   package = "warprrr",
   properties = list(
-    data_path = S7::class_character,
+    data_path = S7::new_property(
+      class = S7::class_character,
+      validator = function(value) {
+        print(value)
+        file_ext <- fs::path_ext(value)
+        supported_files <- c(
+          "csv", "tsv", "psv", "txt", "sas7bdat", "xpt", "parquet", "feather"
+        )
+        if (!file_ext %in% supported_files) {
+          return(
+            warning_glue(
+              "`{file_ext}` files are not supported. ",
+              "Supported formats are: ",
+              "{paste0(supported_files, collapse = ', ')}"
+            )
+          )
+        }
+        NULL
+      }
+    ),
     read_fun_args = S7::class_list,
     cache_path = S7::new_property(
       class = S7::class_character,
@@ -102,62 +120,11 @@ warprrr <- S7::new_class(
       }
     ),
     data_object = S7::new_property(
+      class = S7::class_data.frame,
       getter = function(self) {
-        switch(
-          self@file_ext,
-          csv = {
-            do.call(
-              data.table::fread,
-              c(list(self@data_path), self@read_fun_args)
-            )
-          },
-          tsv = {
-            do.call(
-              data.table::fread,
-              c(list(self@data_path), self@read_fun_args)
-            )
-          },
-          psv = {
-            do.call(
-              data.table::fread,
-              c(list(self@data_path), self@read_fun_args)
-            )
-          },
-          txt = {
-            do.call(
-              data.table::fread,
-              c(list(self@data_path), self@read_fun_args)
-            )
-          },
-          sas7bdat = {
-            do.call(
-              haven::read_sas,
-              c(list(self@data_path), self@read_fun_args)
-            )
-          },
-          xpt = {
-            do.call(
-              haven::read_xpt,
-              c(list(self@data_path), self@read_fun_args)
-            )
-          },
-          parquet = {
-            do.call(
-              arrow::read_parquet,
-              c(list(self@data_path), self@read_fun_args)
-            )
-          },
-          feather = {
-            do.call(
-              arrow::read_feather,
-              c(list(self@data_path), self@read_fun_args)
-            )
-          },
-          {
-            error_glue(
-              "{self@file_ext} files are not supported."
-            )
-          }
+
+        read_data_multi_format(
+          self@file_ext, self@data_path, self@read_fun_args
         )
       }
     )
@@ -191,7 +158,6 @@ warprrr <- S7::new_class(
 #' @return Numeric value: elapsed time in seconds.
 #' @examples
 #' time_taken_precise({Sys.sleep(1)})
-#' @export
 time_taken_precise <- function(expr) {
   start <- proc.time()
   eval(expr)
@@ -211,7 +177,6 @@ time_taken_precise <- function(expr) {
 #'
 #' @return Invisible NULL.
 #' @importFrom glue glue
-#' @export
 inform_glue_verbose <- function(..., verbose, envir = parent.frame()) {
   if (verbose) inform_glue(..., envir = envir) # nolint
 }
@@ -230,7 +195,6 @@ get_data <- S7::new_generic("get_data", c("warper", "verbose"))
 #' @importFrom fs file_exists
 #' @importFrom glue glue
 #'
-#' @export
 S7::method(get_data, list(warprrr, S7::class_logical)) <- function(
     warper, verbose) {
   if (fs::file_exists(warper@cache_full_file_path)) {
