@@ -32,7 +32,6 @@ warprrr <- S7::new_class(
     data_path = S7::new_property(
       class = S7::class_character,
       validator = function(value) {
-        print(value)
         file_ext <- fs::path_ext(value)
         supported_files <- c(
           "csv", "tsv", "psv", "txt", "sas7bdat", "xpt", "parquet", "feather"
@@ -118,15 +117,6 @@ warprrr <- S7::new_class(
           )
         )
       }
-    ),
-    data_object = S7::new_property(
-      class = S7::class_data.frame,
-      getter = function(self) {
-
-        read_data_multi_format(
-          self@file_ext, self@data_path, self@read_fun_args
-        )
-      }
     )
   ),
   validator = function(self) {
@@ -179,59 +169,4 @@ time_taken_precise <- function(expr) {
 #' @importFrom glue glue
 inform_glue_verbose <- function(..., verbose, envir = parent.frame()) {
   if (verbose) inform_glue(..., envir = envir) # nolint
-}
-
-get_data <- S7::new_generic("get_data", c("warper", "verbose"))
-#' Generic Data fetcher for warprrr Class
-#'
-#' Loads data from cache if available, otherwise reads source and caches result.
-#'
-#' @param warper warprrr object.
-#' @param verbose Print detailed messages if TRUE.
-#' @return Data.table, tibble, or arrow table, as appropriate.
-#' @noRd
-#'
-#' @importFrom arrow read_feather write_feather
-#' @importFrom fs file_exists
-#' @importFrom glue glue
-#'
-S7::method(get_data, list(warprrr, S7::class_logical)) <- function(
-    warper, verbose) {
-  if (fs::file_exists(warper@cache_full_file_path)) {
-    inform_glue_verbose(
-      "Cache found! ",
-      "Reading from cache.",
-      verbose = verbose
-    )
-    time_taken <- time_taken_precise({ # nolint
-      data <- arrow::read_feather(warper@cache_full_file_path)
-    })
-    inform_glue_verbose(
-      "Cached Data Read in [ {time_taken} secs ].",
-      verbose = verbose
-    )
-    data
-  } else {
-    inform_glue_verbose(
-      "Reading `{warper@data_path}`.",
-      verbose = verbose
-    )
-    time_taken <- time_taken_precise(
-      data <- warper@data_object
-    )
-    inform_glue_verbose(
-      "Non-Cached Data Read in [ {time_taken} secs ].",
-      verbose = verbose
-    )
-    cache_time_taken <- time_taken_precise( # nolint
-      arrow::write_feather(
-        data, warper@cache_full_file_path
-      )
-    )
-    inform_glue_verbose(
-      "Data cached in [ {cache_time_taken} secs ].",
-      verbose = verbose
-    )
-    data
-  }
 }
