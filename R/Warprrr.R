@@ -140,33 +140,3 @@ warprrr <- S7::new_class(
     )
   }
 )
-
-#' Measure Precise Evaluation Time
-#'
-#' Returns elapsed time in seconds (to six decimals) for the given expression.
-#' @param expr Expression to be evaluated.
-#' @return Numeric value: elapsed time in seconds.
-#' @examples
-#' time_taken_precise({Sys.sleep(1)})
-time_taken_precise <- function(expr) {
-  start <- proc.time()
-  eval(expr)
-  end <- proc.time()
-  elapsed <- (end - start)["elapsed"]
-  elapsed_precise <- format(elapsed, digits = 6, nsmall = 6)
-  as.numeric(elapsed_precise)
-}
-
-#' Verbose Informational Message with glue
-#'
-#' Optionally prints a glue message if verbose is TRUE.
-#'
-#' @param ... Message arguments for glue.
-#' @param envir The parent env when func is called. Required for glue to work.
-#' @param verbose Logical; print message if TRUE.
-#'
-#' @return Invisible NULL.
-#' @importFrom glue glue
-inform_glue_verbose <- function(..., verbose, envir = parent.frame()) {
-  if (verbose) inform_glue(..., envir = envir) # nolint
-}

@@ -150,6 +150,16 @@ error_glue <- function(..., envir = parent.frame()) {
   )
 }
 
+log_message <- function(..., envir = parent.frame()) {
+  msg <- glue::glue(
+    "\n{dv_log_preffix()}",
+    ...,
+    "\n\n",
+    .envir = envir
+  )
+  msg
+}
+
 #' @importFrom glue glue
 #' @importFrom cli col_br_yellow
 #'
@@ -157,13 +167,12 @@ warning_glue <- function(..., envir = parent.frame()) {
 
   cat(
     cli::col_br_yellow(
-      glue::glue(
-        "\n{dv_log_preffix()}",
-        ...,
-        "\n\n",
-        .envir = envir
-      )
+      log_message(..., envir = envir)
     )
+  )
+  glue::glue(
+    paste0(unlist(list(...)), collapse = ""),
+    .envir = envir
   )
 }
 
@@ -172,3 +181,32 @@ system_glue <- function(..., envir = parent.frame()) {
     glue::glue(..., .envir = envir)
   )
 }
+
+#' Measure Precise Evaluation Time
+#'
+#' Returns elapsed time in seconds (to six decimals) for the given expression.
+#' @param expr Expression to be evaluated.
+#' @return Numeric value: elapsed time in seconds.
+time_taken_precise <- function(expr) {
+  start <- proc.time()
+  eval(expr)
+  end <- proc.time()
+  elapsed <- (end - start)["elapsed"]
+  elapsed_precise <- format(elapsed, digits = 6, nsmall = 6)
+  as.numeric(elapsed_precise)
+}
+
+#' Verbose Informational Message with glue
+#'
+#' Optionally prints a glue message if verbose is TRUE.
+#'
+#' @param ... Message arguments for glue.
+#' @param envir The parent env when func is called. Required for glue to work.
+#' @param verbose Logical; print message if TRUE.
+#'
+#' @return Invisible NULL.
+#' @importFrom glue glue
+inform_glue_verbose <- function(..., verbose, envir = parent.frame()) {
+  if (verbose) inform_glue(..., envir = envir) # nolint
+}
+

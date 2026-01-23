@@ -101,23 +101,29 @@ testthat::describe("warprrr S7 class", {
 
   it("reads data_object depending on extension (csv)", {
     dc <- warprrr(data_path = temp_csv)
-    obj <- dc@data_object
+    obj <- dc |>
+      get_data(verbose = FALSE)
     expect_s3_class(obj, "data.table")
     expect_identical(dim(obj), dim(big_df))
   })
 
   it("reads data_object depending on extension (parquet)", {
     dc <- warprrr(data_path = temp_parquet)
+    data_object <- dc |>
+      get_data(verbose = FALSE)
     expect_identical(
-      class(dc@data_object),
+      class(data_object),
       c("tbl_df", "tbl", "data.frame")
     )
-    expect_identical(dim(dc@data_object), dim(big_df))
+    expect_identical(dim(data_object), dim(big_df))
   })
 
   it("errors on unsupported file extension", {
-    dc <- warprrr(data_path = temp_file_unsupported)
-    expect_error(dc@data_object, "files are not supported")
+    expect_error(
+      invisible(dc <- warprrr(data_path = temp_file_unsupported)),
+      regexp = "files are not supported"
+    )
+
   })
 
   it("get_data caches and loads data correctly (cache miss -> cache hit)", {
@@ -222,7 +228,9 @@ testthat::describe("warprrr S7 class", {
     names(iris_sas) <- gsub("\\.", "_", names(iris_sas))
     suppressWarnings(haven::write_sas(iris_sas, temp_sas))
     dc <- warprrr(data_path = temp_sas)
-    obj <- dc@data_object
+    data_object <- dc |>
+      get_data(verbose = FALSE)
+    obj <- data_object
     expect_s3_class(obj, "tbl_df")
     expect_identical(dim(obj), dim(datasets::iris))
   })

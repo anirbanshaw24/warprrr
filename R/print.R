@@ -7,26 +7,28 @@
 #'
 #' Output is designed for clear viewing in R consoles, logs, or shiny app outputs.
 #'
-#' @param warper A `warprrr` S7 object containing data wrangling and caching configuration.
-#'
+#' @name print
+#' @param x A `warprrr` S7 object containing data wrangling and caching configuration.
+#' @param ... Further arguments passed to or from other methods (ignored).
 #' @return Invisibly returns the input `warprrr` object.
 #' @seealso [warprrr]
 #' @keywords internal
-S7::method(print, warprrr) <- function(warper) {
+S7::method(print, warprrr) <- function(x, ...) {
   # Check if data file exists
-  data_exists <- fs::file_exists(warper@data_path)
-  existence <- if (data_exists) "✅ exists" else "❌ missing"
+  data_exists <- fs::file_exists(x@data_path)
+  existence <- if (data_exists) "[OK] exists" else "[X] missing"
+
   # Gather full cache file existence
-  cache_exists <- fs::file_exists(warper@cache_full_file_path)
-  cache_existence <- if (cache_exists) "✅ (present)" else "❌ (not present)"
+  cache_exists <- fs::file_exists(x@cache_full_file_path)
+  cache_existence <- if (cache_exists) "[OK] (present)" else "[X] (not present)"
 
   # Build read_fun call
-  args_str <- if (length(warper@read_fun_args) == 0) {
+  args_str <- if (length(x@read_fun_args) == 0) {
     ""
   } else {
     paste(
-      lapply(names(warper@read_fun_args), function(nm) {
-        arg <- warper@read_fun_args[[nm]]
+      lapply(names(x@read_fun_args), function(nm) {
+        arg <- x@read_fun_args[[nm]]
         # Quote if character, literal if not
         if (is.character(arg)) paste0(nm, " = '", arg, "'")
         else paste0(nm, " = ", toString(arg))
@@ -36,7 +38,7 @@ S7::method(print, warprrr) <- function(warper) {
   }
 
   read_fun <- switch(
-    warper@file_ext,
+    x@file_ext,
     csv = "data.table::fread",
     tsv = "data.table::fread",
     psv = "data.table::fread",
@@ -50,16 +52,16 @@ S7::method(print, warprrr) <- function(warper) {
 
   cat(
     "\n<warprrr::warprrr>\n",
-    "  Data Path      : ", warper@data_path, " [", existence, "]\n",
-    "  Data Format    : ", warper@file_ext, "\n",
-    "  Read Command   : ", read_fun, "(\n    '", warper@data_path, "'",
+    "  Data Path      : ", x@data_path, " [", existence, "]\n",
+    "  Data Format    : ", x@file_ext, "\n",
+    "  Read Command   : ", read_fun, "(\n    '", x@data_path, "'",
     if (args_str != "") paste0(", ", args_str), "\n  )\n", sep = ""
   )
   cat(
-    "  Cache Dir      : ", warper@cache_path, "\n",
-    "  Cache Ext      : ", warper@cache_ext, "\n",
-    # "  Cache File     : ", warper@cache_full_file_path, " [", cache_existence, "]\n",
+    "  Cache Dir      : ", x@cache_path, "\n",
+    "  Cache Ext      : ", x@cache_ext, "\n",
+    # "  Cache File     : ", x@cache_full_file_path, " [", cache_existence, "]\n",
     sep = ""
   )
-  invisible(warper)
+  invisible(x)
 }

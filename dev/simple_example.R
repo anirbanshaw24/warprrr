@@ -1,5 +1,11 @@
 
 pkgload::load_all()
+temp <- warprrr::read_data(
+  file.path(data_dir, "lab_data.sas7bdat"), n_max = 3
+)
+temp$warprrr |>
+  print()
+
 
 generate_patient_labs_long <- function(
     n_patients = 10000,
