@@ -52,14 +52,14 @@ S7::method(print, warprrr) <- function(x, ...) {
 
   cat(
     "\n<warprrr::warprrr>\n",
-    "  Data Path      : ", x@data_path, " [", existence, "]\n",
-    "  Data Format    : ", x@file_ext, "\n",
-    "  Read Command   : ", read_fun, "(\n    '", x@data_path, "'",
-    if (args_str != "") paste0(", ", args_str), "\n  )\n", sep = ""
+    "  Data Path      : `", x@data_path, "` [", existence, "]\n",
+    "  Data Format    : `", x@file_ext, "`\n",
+    "  Read Command   : ```", read_fun, "(\n    '", x@data_path, "'",
+    if (args_str != "") paste0(", ", args_str), "\n  )```\n", sep = ""
   )
   cat(
-    "  Cache Dir      : ", x@cache_path, "\n",
-    "  Cache Ext      : ", x@cache_ext, "\n",
+    "  Cache Dir      : `", x@cache_path, "`\n",
+    "  Cache Ext      : `", x@cache_ext, "`\n",
     # "  Cache File     : ", x@cache_full_file_path, " [", cache_existence, "]\n",
     sep = ""
   )
