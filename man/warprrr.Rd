@@ -19,6 +19,37 @@ Parquet and Feather files are read using
 
 \item{cache_path}{Path to the cache directory.}
 }
+\value{
+\subsection{warprrr Value Details}{
+
+An S7 class with these properties:
+\itemize{
+\item \strong{Settable:}
+\itemize{
+\item \code{data_path}: File path
+\item \code{read_fun_args}: List of extra reader args
+\item \code{cache_path}: Path to cache directory
+}
+\item \strong{Auto-computed (read-only, cannot be set):}
+\itemize{
+\item \code{file_ext}: File extension (deduced from path)
+\item \code{file_info}: File metadata (\code{fs::file_info})
+\item \code{cache_hash}: Hash (digest) calculated from filename, args, file meta
+\item \code{cache_ext}: Always \code{.feather} (enforced)
+\item \code{cache_hash_file_name}: Full cache filename (\verb{\{hash\}.feather})
+\item \code{cache_full_file_path}: Absolute cache path
+}
+}
+
+These metadata fields support fast cache querying, reliability in pipelines,
+and usage audits. Properties with getters (listed above) are \emph{auto-calculated} and
+cannot be manually set.
+
+For cache control, supply a directory and inspect the \code{cache_full_file_path}
+property. All file format checks are enforced at construction, and the class
+supports future expansion of supported file types.
+}
+}
 \description{
 Defines an S7 class that handles data loading and on-disk caching
 using Parquet format where applicable.

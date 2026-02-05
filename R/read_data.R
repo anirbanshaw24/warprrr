@@ -16,9 +16,25 @@ utils::globalVariables(
 #' @param verbose Whether to print logs, time taken to read non-cached vs
 #'  cached data etc.
 #'
-#' @return A named list of the form: list(data = data, warprrr = warprrr_class).
-#'  warprrr class can be used to observe or use the properties of this instance
-#'   of warprrr.
+#' @return
+#'   A named list:
+#'   \describe{
+#'     \item{data}{The loaded data frame.}
+#'     \item{warprrr}{An S7 class instance containing file paths, caching info, file status,
+#'       hash (for cache), and accessors to underlying properties.}
+#'   }
+#'
+#' - **`data`**: The data frame loaded from `data_path`, ready for analysis.
+#' - **`warprrr`**: S7 class with properties for inspecting file info, cache status, and managing caching.
+#'
+#' The `warprrr` object exposes properties:
+#' - `data_path`, `read_fun_args`, `cache_path`: *Configurable* (can be set at creation)
+#' - `file_ext`, `file_info`, `cache_hash`, `cache_ext`, `cache_hash_file_name`, `cache_full_file_path`: *Read-only*, auto-computed via getter methods—cannot be manually changed.
+#'
+#' Use the class to inspect file characteristics, ensure reproducible caching, and track metadata for pipelines.
+#'
+#' See `warprrr` class documentation for property details and intended usage.
+#'
 #' @export
 #'
 read_data <- function(

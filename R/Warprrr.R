@@ -16,6 +16,30 @@
 #'
 #' @param cache_path Path to the cache directory.
 #'
+#' @return
+#' ### warprrr Value Details
+#' An S7 class with these properties:
+#' - **Settable:**
+#'   - `data_path`: File path
+#'   - `read_fun_args`: List of extra reader args
+#'   - `cache_path`: Path to cache directory
+#'
+#' - **Auto-computed (read-only, cannot be set):**
+#'   - `file_ext`: File extension (deduced from path)
+#'   - `file_info`: File metadata (`fs::file_info`)
+#'   - `cache_hash`: Hash (digest) calculated from filename, args, file meta
+#'   - `cache_ext`: Always `.feather` (enforced)
+#'   - `cache_hash_file_name`: Full cache filename (`{hash}.feather`)
+#'   - `cache_full_file_path`: Absolute cache path
+#'
+#' These metadata fields support fast cache querying, reliability in pipelines,
+#' and usage audits. Properties with getters (listed above) are *auto-calculated* and
+#' cannot be manually set.
+#'
+#' For cache control, supply a directory and inspect the `cache_full_file_path`
+#' property. All file format checks are enforced at construction, and the class
+#' supports future expansion of supported file types.
+#'
 #' @importFrom S7 new_class class_character new_property new_generic
 #'   S7_dispatch method
 #' @importFrom fs is_dir dir_create file_access path_ext file_info
@@ -25,6 +49,7 @@
 #' @importFrom data.table fread
 #' @importFrom haven read_sas read_xpt
 #' @importFrom arrow read_parquet read_feather
+#'
 warprrr <- S7::new_class(
   "warprrr",
   package = "warprrr",

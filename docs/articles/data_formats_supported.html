@@ -120,7 +120,7 @@ same interface with automatic caching.</p>
 <span></span>
 <span>  <span class="va">patient_ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"PT%06d"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_patients</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span>  <span class="va">patient_visits</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/J.html" class="external-link">CJ</a></span><span class="op">(</span></span>
+<span>  <span class="va">patient_visits</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/J.html" class="external-link">CJ</a></span><span class="op">(</span></span>
 <span>    PatientID <span class="op">=</span> <span class="va">patient_ids</span>,</span>
 <span>    VisitNumber <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">visits_per_patient</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
@@ -134,7 +134,7 @@ same interface with automatic caching.</p>
 <span>    <span class="st">"Creatinine"</span>, <span class="st">"ALT"</span>, <span class="st">"AST"</span>, <span class="st">"BUN"</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span>  <span class="va">dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/J.html" class="external-link">CJ</a></span><span class="op">(</span></span>
+<span>  <span class="va">dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/J.html" class="external-link">CJ</a></span><span class="op">(</span></span>
 <span>    PatientID <span class="op">=</span> <span class="va">patient_visits</span><span class="op">$</span><span class="va">PatientID</span>,</span>
 <span>    VisitNumber <span class="op">=</span> <span class="va">patient_visits</span><span class="op">$</span><span class="va">VisitNumber</span>,</span>
 <span>    LabTest <span class="op">=</span> <span class="va">lab_tests</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">labs_per_visit</span><span class="op">)</span><span class="op">]</span></span>
@@ -142,7 +142,7 @@ same interface with automatic caching.</p>
 <span></span>
 <span>  <span class="va">dt</span> <span class="op">&lt;-</span> <span class="va">patient_visits</span><span class="op">[</span><span class="va">dt</span>, on <span class="op">=</span> <span class="fu">.</span><span class="op">(</span><span class="va">PatientID</span>, <span class="va">VisitNumber</span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
-<span>  <span class="va">dt</span><span class="op">[</span>, <span class="va">LabValue</span> <span class="op">:=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fcase.html" class="external-link">fcase</a></span><span class="op">(</span></span>
+<span>  <span class="va">dt</span><span class="op">[</span>, <span class="va">LabValue</span> <span class="op">:=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fcase.html" class="external-link">fcase</a></span><span class="op">(</span></span>
 <span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"Glucose"</span>,      <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">.N</span>, <span class="fl">95</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"Hemoglobin"</span>,  <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">.N</span>, <span class="fl">14</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"WBC"</span>,         <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">.N</span>, <span class="fl">7.5</span>, <span class="fl">2.5</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>,</span>
@@ -153,7 +153,7 @@ same interface with automatic caching.</p>
 <span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"BUN"</span>,         <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">.N</span>, <span class="fl">15</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span>  <span class="op">)</span><span class="op">]</span></span>
 <span></span>
-<span>  <span class="va">dt</span><span class="op">[</span>, <span class="va">Unit</span> <span class="op">:=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fcase.html" class="external-link">fcase</a></span><span class="op">(</span></span>
+<span>  <span class="va">dt</span><span class="op">[</span>, <span class="va">Unit</span> <span class="op">:=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fcase.html" class="external-link">fcase</a></span><span class="op">(</span></span>
 <span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"Glucose"</span>,      <span class="st">"mg/dL"</span>,</span>
 <span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"Hemoglobin"</span>,  <span class="st">"g/dL"</span>,</span>
 <span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"WBC"</span>,         <span class="st">"10^3/uL"</span>,</span>
@@ -163,7 +163,7 @@ same interface with automatic caching.</p>
 <span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"BUN"</span>,         <span class="st">"mg/dL"</span></span>
 <span>  <span class="op">)</span><span class="op">]</span></span>
 <span></span>
-<span>  <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">dt</span>, <span class="va">PatientID</span>, <span class="va">VisitDate</span>, <span class="va">LabTest</span><span class="op">)</span></span>
+<span>  <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">dt</span>, <span class="va">PatientID</span>, <span class="va">VisitDate</span>, <span class="va">LabTest</span><span class="op">)</span></span>
 <span>  <span class="va">dt</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
@@ -194,7 +194,7 @@ same interface with automatic caching.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">data_dir</span>, showWarnings <span class="op">=</span> <span class="cn">FALSE</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">data_dir</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmp7rmBxm/warprrr-formats"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "/tmp/RtmpzutB2o/warprrr-formats"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="writing-source-files">Writing Source Files<a class="anchor" aria-label="anchor" href="#writing-source-files"></a>
@@ -203,10 +203,10 @@ same interface with automatic caching.</p>
 <h3 id="delimited-text-files">Delimited Text Files<a class="anchor" aria-label="anchor" href="#delimited-text-files"></a>
 </h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fwrite.html" class="external-link">fwrite</a></span><span class="op">(</span><span class="va">dt</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"example.csv"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fwrite.html" class="external-link">fwrite</a></span><span class="op">(</span><span class="va">dt</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"example.tsv"</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"\t"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fwrite.html" class="external-link">fwrite</a></span><span class="op">(</span><span class="va">dt</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"example.psv"</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"|"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fwrite.html" class="external-link">fwrite</a></span><span class="op">(</span><span class="va">dt</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"example.txt"</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fwrite.html" class="external-link">fwrite</a></span><span class="op">(</span><span class="va">dt</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"example.csv"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fwrite.html" class="external-link">fwrite</a></span><span class="op">(</span><span class="va">dt</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"example.tsv"</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"\t"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fwrite.html" class="external-link">fwrite</a></span><span class="op">(</span><span class="va">dt</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"example.psv"</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"|"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fwrite.html" class="external-link">fwrite</a></span><span class="op">(</span><span class="va">dt</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"example.txt"</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="columnar-formats">Columnar Formats<a class="anchor" aria-label="anchor" href="#columnar-formats"></a>
@@ -241,16 +241,16 @@ unless the source file changes.</p>
 <code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"example.csv"</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">}</span>, <span class="st">"Reading csv 1st time"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:33: </span><span style="color: #5555FF;">Reading `/tmp/Rtmp7rmBxm/warprrr-formats/example.csv`.</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:33: </span><span style="color: #5555FF;">Non-Cached Data Read in [ 0.131 secs ].</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:33: </span><span style="color: #5555FF;">Data cached in [ 0.236 secs ].</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span>Time taken to Reading csv 1st time : 0.38 secs</span></span>
+<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:20: </span><span style="color: #5555FF;">Reading `/tmp/RtmpzutB2o/warprrr-formats/example.csv`.</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:20: </span><span style="color: #5555FF;">Non-Cached Data Read in [ 0.136 secs ].</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:20: </span><span style="color: #5555FF;">Data cached in [ 0.24 secs ].</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span>Time taken to Reading csv 1st time : 0.39 secs</span></span>
 <span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"example.csv"</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">}</span>, <span class="st">"Reading same csv 2nd time"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:33: </span><span style="color: #5555FF;">Cache found! Reading from cache.</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:33: </span><span style="color: #5555FF;">Cached Data Read in [ 0.099 secs ].</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span>Time taken to Reading same csv 2nd time : 0.10 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:20: </span><span style="color: #5555FF;">Cache found! Reading from cache.</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:20: </span><span style="color: #5555FF;">Cached Data Read in [ 0.07 secs ].</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span>Time taken to Reading same csv 2nd time : 0.07 secs</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="tsv">TSV<a class="anchor" aria-label="anchor" href="#tsv"></a>
@@ -259,16 +259,16 @@ unless the source file changes.</p>
 <code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"example.tsv"</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">}</span>, <span class="st">"Reading txt 1st time"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:34: </span><span style="color: #5555FF;">Reading `/tmp/Rtmp7rmBxm/warprrr-formats/example.tsv`.</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:34: </span><span style="color: #5555FF;">Non-Cached Data Read in [ 0.15 secs ].</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:34: </span><span style="color: #5555FF;">Data cached in [ 0.233 secs ].</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span>Time taken to Reading txt 1st time : 0.39 secs</span></span>
+<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:21: </span><span style="color: #5555FF;">Reading `/tmp/RtmpzutB2o/warprrr-formats/example.tsv`.</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:21: </span><span style="color: #5555FF;">Non-Cached Data Read in [ 0.156 secs ].</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:21: </span><span style="color: #5555FF;">Data cached in [ 0.237 secs ].</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span>Time taken to Reading txt 1st time : 0.40 secs</span></span>
 <span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"example.tsv"</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">}</span>, <span class="st">"Reading same txt 2nd time"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:34: </span><span style="color: #5555FF;">Cache found! Reading from cache.</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:34: </span><span style="color: #5555FF;">Cached Data Read in [ 0.21 secs ].</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span>Time taken to Reading same txt 2nd time : 0.21 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:21: </span><span style="color: #5555FF;">Cache found! Reading from cache.</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:21: </span><span style="color: #5555FF;">Cached Data Read in [ 0.222 secs ].</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span>Time taken to Reading same txt 2nd time : 0.23 secs</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="psv">PSV<a class="anchor" aria-label="anchor" href="#psv"></a>
@@ -277,15 +277,15 @@ unless the source file changes.</p>
 <code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"example.psv"</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">}</span>, <span class="st">"Reading psv 1st time"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:34: </span><span style="color: #5555FF;">Reading `/tmp/Rtmp7rmBxm/warprrr-formats/example.psv`.</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:34: </span><span style="color: #5555FF;">Non-Cached Data Read in [ 0.122 secs ].</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:35: </span><span style="color: #5555FF;">Data cached in [ 0.241 secs ].</span></span></span>
+<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:21: </span><span style="color: #5555FF;">Reading `/tmp/RtmpzutB2o/warprrr-formats/example.psv`.</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:21: </span><span style="color: #5555FF;">Non-Cached Data Read in [ 0.12 secs ].</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:22: </span><span style="color: #5555FF;">Data cached in [ 0.242 secs ].</span></span></span>
 <span><span class="co"><span style="color: #5555FF;">#&gt; </span>Time taken to Reading psv 1st time : 0.37 secs</span></span>
 <span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"example.psv"</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">}</span>, <span class="st">"Reading same psv 2nd time"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:35: </span><span style="color: #5555FF;">Cache found! Reading from cache.</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:35: </span><span style="color: #5555FF;">Cached Data Read in [ 0.039 secs ].</span></span></span>
+<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:22: </span><span style="color: #5555FF;">Cache found! Reading from cache.</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:22: </span><span style="color: #5555FF;">Cached Data Read in [ 0.039 secs ].</span></span></span>
 <span><span class="co"><span style="color: #5555FF;">#&gt; </span>Time taken to Reading same psv 2nd time : 0.04 secs</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -295,15 +295,15 @@ unless the source file changes.</p>
 <code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"example.txt"</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">}</span>, <span class="st">"Reading txt 1st time"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:35: </span><span style="color: #5555FF;">Reading `/tmp/Rtmp7rmBxm/warprrr-formats/example.txt`.</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:35: </span><span style="color: #5555FF;">Non-Cached Data Read in [ 0.139 secs ].</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:35: </span><span style="color: #5555FF;">Data cached in [ 0.233 secs ].</span></span></span>
+<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:22: </span><span style="color: #5555FF;">Reading `/tmp/RtmpzutB2o/warprrr-formats/example.txt`.</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:22: </span><span style="color: #5555FF;">Non-Cached Data Read in [ 0.141 secs ].</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:22: </span><span style="color: #5555FF;">Data cached in [ 0.232 secs ].</span></span></span>
 <span><span class="co"><span style="color: #5555FF;">#&gt; </span>Time taken to Reading txt 1st time : 0.38 secs</span></span>
 <span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"example.txt"</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">}</span>, <span class="st">"Reading same txt 2nd time"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:35: </span><span style="color: #5555FF;">Cache found! Reading from cache.</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:35: </span><span style="color: #5555FF;">Cached Data Read in [ 0.211 secs ].</span></span></span>
+<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:22: </span><span style="color: #5555FF;">Cache found! Reading from cache.</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:22: </span><span style="color: #5555FF;">Cached Data Read in [ 0.216 secs ].</span></span></span>
 <span><span class="co"><span style="color: #5555FF;">#&gt; </span>Time taken to Reading same txt 2nd time : 0.22 secs</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -313,15 +313,15 @@ unless the source file changes.</p>
 <code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"example.parquet"</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">}</span>, <span class="st">"Reading parquet 1st time"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:35: </span><span style="color: #5555FF;">Reading `/tmp/Rtmp7rmBxm/warprrr-formats/example.parquet`.</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:35: </span><span style="color: #5555FF;">Non-Cached Data Read in [ 0.048 secs ].</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:35: </span><span style="color: #5555FF;">Data cached in [ 0.06 secs ].</span></span></span>
+<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:22: </span><span style="color: #5555FF;">Reading `/tmp/RtmpzutB2o/warprrr-formats/example.parquet`.</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:22: </span><span style="color: #5555FF;">Non-Cached Data Read in [ 0.048 secs ].</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:22: </span><span style="color: #5555FF;">Data cached in [ 0.062 secs ].</span></span></span>
 <span><span class="co"><span style="color: #5555FF;">#&gt; </span>Time taken to Reading parquet 1st time : 0.11 secs</span></span>
 <span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"example.parquet"</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">}</span>, <span class="st">"Reading same parquet 2nd time"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:35: </span><span style="color: #5555FF;">Cache found! Reading from cache.</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:35: </span><span style="color: #5555FF;">Cached Data Read in [ 0.028 secs ].</span></span></span>
+<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:22: </span><span style="color: #5555FF;">Cache found! Reading from cache.</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:22: </span><span style="color: #5555FF;">Cached Data Read in [ 0.026 secs ].</span></span></span>
 <span><span class="co"><span style="color: #5555FF;">#&gt; </span>Time taken to Reading same parquet 2nd time : 0.03 secs</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -331,15 +331,15 @@ unless the source file changes.</p>
 <code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"example.feather"</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">}</span>, <span class="st">"Reading feather 1st time"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:35: </span><span style="color: #5555FF;">Reading `/tmp/Rtmp7rmBxm/warprrr-formats/example.feather`.</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:35: </span><span style="color: #5555FF;">Non-Cached Data Read in [ 0.032 secs ].</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:36: </span><span style="color: #5555FF;">Data cached in [ 0.059 secs ].</span></span></span>
+<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:22: </span><span style="color: #5555FF;">Reading `/tmp/RtmpzutB2o/warprrr-formats/example.feather`.</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:23: </span><span style="color: #5555FF;">Non-Cached Data Read in [ 0.032 secs ].</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:23: </span><span style="color: #5555FF;">Data cached in [ 0.06 secs ].</span></span></span>
 <span><span class="co"><span style="color: #5555FF;">#&gt; </span>Time taken to Reading feather 1st time : 0.10 secs</span></span>
 <span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"example.feather"</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">}</span>, <span class="st">"Reading same feather 2nd time"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:36: </span><span style="color: #5555FF;">Cache found! Reading from cache.</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:36: </span><span style="color: #5555FF;">Cached Data Read in [ 0.036 secs ].</span></span></span>
+<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:23: </span><span style="color: #5555FF;">Cache found! Reading from cache.</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:23: </span><span style="color: #5555FF;">Cached Data Read in [ 0.037 secs ].</span></span></span>
 <span><span class="co"><span style="color: #5555FF;">#&gt; </span>Time taken to Reading same feather 2nd time : 0.04 secs</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -349,15 +349,15 @@ unless the source file changes.</p>
 <code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"example.sas7bdat"</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">}</span>, <span class="st">"Reading sas 1st time"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:36: </span><span style="color: #5555FF;">Reading `/tmp/Rtmp7rmBxm/warprrr-formats/example.sas7bdat`.</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:37: </span><span style="color: #5555FF;">Non-Cached Data Read in [ 1.689 secs ].</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:38: </span><span style="color: #5555FF;">Data cached in [ 0.231 secs ].</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span>Time taken to Reading sas 1st time : 1.93 secs</span></span>
+<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:23: </span><span style="color: #5555FF;">Reading `/tmp/RtmpzutB2o/warprrr-formats/example.sas7bdat`.</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:24: </span><span style="color: #5555FF;">Non-Cached Data Read in [ 1.727 secs ].</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:25: </span><span style="color: #5555FF;">Data cached in [ 0.242 secs ].</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span>Time taken to Reading sas 1st time : 1.97 secs</span></span>
 <span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"example.sas7bdat"</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">}</span>, <span class="st">"Reading same sas 2nd time"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:38: </span><span style="color: #5555FF;">Cache found! Reading from cache.</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:38: </span><span style="color: #5555FF;">Cached Data Read in [ 0.026 secs ].</span></span></span>
+<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:25: </span><span style="color: #5555FF;">Cache found! Reading from cache.</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:25: </span><span style="color: #5555FF;">Cached Data Read in [ 0.028 secs ].</span></span></span>
 <span><span class="co"><span style="color: #5555FF;">#&gt; </span>Time taken to Reading same sas 2nd time : 0.03 secs</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -367,15 +367,15 @@ unless the source file changes.</p>
 <code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"example.xpt"</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">}</span>, <span class="st">"Reading xpt 1st time"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:38: </span><span style="color: #5555FF;">Reading `/tmp/Rtmp7rmBxm/warprrr-formats/example.xpt`.</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:40: </span><span style="color: #5555FF;">Non-Cached Data Read in [ 2.378 secs ].</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:40: </span><span style="color: #5555FF;">Data cached in [ 0.231 secs ].</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span>Time taken to Reading xpt 1st time : 2.61 secs</span></span>
+<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:25: </span><span style="color: #5555FF;">Reading `/tmp/RtmpzutB2o/warprrr-formats/example.xpt`.</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:27: </span><span style="color: #5555FF;">Non-Cached Data Read in [ 2.247 secs ].</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:27: </span><span style="color: #5555FF;">Data cached in [ 0.239 secs ].</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span>Time taken to Reading xpt 1st time : 2.49 secs</span></span>
 <span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"example.xpt"</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">}</span>, <span class="st">"Reading same xpt 2nd time"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:40: </span><span style="color: #5555FF;">Cache found! Reading from cache.</span></span></span>
-<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-01-12 05:02:40: </span><span style="color: #5555FF;">Cached Data Read in [ 0.027 secs ].</span></span></span>
+<span><span class="co">#&gt; <span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:27: </span><span style="color: #5555FF;">Cache found! Reading from cache.</span></span></span>
+<span><span class="co"><span style="color: #5555FF;">#&gt; </span><span style="color: #55FFFF;">warprrr @ 2026-02-05 07:58:27: </span><span style="color: #5555FF;">Cached Data Read in [ 0.031 secs ].</span></span></span>
 <span><span class="co"><span style="color: #5555FF;">#&gt; </span>Time taken to Reading same xpt 2nd time : 0.03 secs</span></span></code></pre></div>
 </div>
 </div>
@@ -386,7 +386,7 @@ unless the source file changes.</p>
 to the underlying reader:</p>
 <ul>
 <li>
-<code><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">data.table::fread()</a></code> for CSV / TSV / PSV / TXT</li>
+<code><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">data.table::fread()</a></code> for CSV / TSV / PSV / TXT</li>
 <li>
 <code><a href="https://haven.tidyverse.org/reference/read_sas.html" class="external-link">haven::read_sas()</a></code> and
 <code><a href="https://haven.tidyverse.org/reference/read_xpt.html" class="external-link">haven::read_xpt()</a></code>
@@ -417,34 +417,34 @@ to the underlying reader:</p>
 <span><span class="co">#&gt; skipping.</span></span>
 <span><span class="co">#&gt; Warning in (function (input = "", file = NULL, text = NULL, cmd = NULL, :</span></span>
 <span><span class="co">#&gt; Column name 'Value' not found in column name header (case sensitive), skipping.</span></span>
-<span><span class="co">#&gt;  @ data_path           : chr "/tmp/Rtmp7rmBxm/warprrr-formats/example.csv"</span></span>
+<span><span class="co">#&gt;  @ data_path           : chr "/tmp/RtmpzutB2o/warprrr-formats/example.csv"</span></span>
 <span><span class="co">#&gt;  @ read_fun_args       :List of 1</span></span>
 <span><span class="co">#&gt;  .. $ select: chr [1:2] "SubjectID" "Value"</span></span>
 <span><span class="co">#&gt;  @ cache_path          : chr "~/.cache/patient_profiles/"</span></span>
 <span><span class="co">#&gt;  @ file_ext            : chr "csv"</span></span>
 <span><span class="co">#&gt;  @ file_info           : tibble [1 × 18] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">#&gt;  $ path             : 'fs_path' chr "/tmp/Rtmp7rmBxm/warprrr-formats/example.csv"</span></span>
+<span><span class="co">#&gt;  $ path             : 'fs_path' chr "/tmp/RtmpzutB2o/warprrr-formats/example.csv"</span></span>
 <span><span class="co">#&gt;  $ type             : Factor w/ 8 levels "any","block_device",..: 7</span></span>
 <span><span class="co">#&gt;  $ size             : 'fs_bytes' num 61.1M</span></span>
 <span><span class="co">#&gt;  $ permissions      : 'fs_perms' int rw-r--r--</span></span>
-<span><span class="co">#&gt;  $ modification_time: POSIXct[1:1], format: "2026-01-12 05:02:30"</span></span>
+<span><span class="co">#&gt;  $ modification_time: POSIXct[1:1], format: "2026-02-05 07:58:17"</span></span>
 <span><span class="co">#&gt;  $ user             : chr "shawa11"</span></span>
 <span><span class="co">#&gt;  $ group            : chr "gbs"</span></span>
-<span><span class="co">#&gt;  $ device_id        : num 66308</span></span>
+<span><span class="co">#&gt;  $ device_id        : num 66307</span></span>
 <span><span class="co">#&gt;  $ hard_links       : num 1</span></span>
 <span><span class="co">#&gt;  $ special_device_id: num 0</span></span>
-<span><span class="co">#&gt;  $ inode            : num 1.28e+09</span></span>
+<span><span class="co">#&gt;  $ inode            : num 7.93e+08</span></span>
 <span><span class="co">#&gt;  $ block_size       : num 4096</span></span>
 <span><span class="co">#&gt;  $ blocks           : num 125216</span></span>
 <span><span class="co">#&gt;  $ flags            : int 0</span></span>
 <span><span class="co">#&gt;  $ generation       : num 0</span></span>
-<span><span class="co">#&gt;  $ access_time      : POSIXct[1:1], format: "2026-01-12 05:02:33"</span></span>
-<span><span class="co">#&gt;  $ change_time      : POSIXct[1:1], format: "2026-01-12 05:02:30"</span></span>
-<span><span class="co">#&gt;  $ birth_time       : POSIXct[1:1], format: "2026-01-12 05:02:30"</span></span>
-<span><span class="co">#&gt;  @ cache_hash          : chr "89e123689b91b4ddd85331ff55a43efd"</span></span>
+<span><span class="co">#&gt;  $ access_time      : POSIXct[1:1], format: "2026-02-05 07:58:20"</span></span>
+<span><span class="co">#&gt;  $ change_time      : POSIXct[1:1], format: "2026-02-05 07:58:17"</span></span>
+<span><span class="co">#&gt;  $ birth_time       : POSIXct[1:1], format: "2026-02-05 07:58:17"</span></span>
+<span><span class="co">#&gt;  @ cache_hash          : chr "a6ee9b7e0bde19af76b56f638b4e8fdf"</span></span>
 <span><span class="co">#&gt;  @ cache_ext           : chr ".feather"</span></span>
-<span><span class="co">#&gt;  @ cache_hash_file_name: 'glue' chr "89e123689b91b4ddd85331ff55a43efd.feather"</span></span>
-<span><span class="co">#&gt;  @ cache_full_file_path: 'fs_path' chr "~/.cache/patient_profiles/89e123689b91b4ddd85331ff55a43efd.feather"</span></span>
+<span><span class="co">#&gt;  @ cache_hash_file_name: 'glue' chr "a6ee9b7e0bde19af76b56f638b4e8fdf.feather"</span></span>
+<span><span class="co">#&gt;  @ cache_full_file_path: 'fs_path' chr "~/.cache/patient_profiles/a6ee9b7e0bde19af76b56f638b4e8fdf.feather"</span></span>
 <span><span class="co">#&gt;  @ data_object         :Classes 'data.table' and 'data.frame':   0 obs. of  0 variables</span></span>
 <span><span class="co">#&gt;  .. - attr(*, ".internal.selfref")=&lt;externalptr&gt;</span></span></code></pre></div>
 </div>

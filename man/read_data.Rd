@@ -22,9 +22,26 @@ are read with arrow::read_parquet and arrow::read_feather respectively.
 Arguments can be passed to these functions via this argument.}
 }
 \value{
-A named list of the form: list(data = data, warprrr = warprrr_class).
-warprrr class can be used to observe or use the properties of this instance
-of warprrr.
+A named list:
+\describe{
+\item{data}{The loaded data frame.}
+\item{warprrr}{An S7 class instance containing file paths, caching info, file status,
+hash (for cache), and accessors to underlying properties.}
+}
+\itemize{
+\item \strong{\code{data}}: The data frame loaded from \code{data_path}, ready for analysis.
+\item \strong{\code{warprrr}}: S7 class with properties for inspecting file info, cache status, and managing caching.
+}
+
+The \code{warprrr} object exposes properties:
+\itemize{
+\item \code{data_path}, \code{read_fun_args}, \code{cache_path}: \emph{Configurable} (can be set at creation)
+\item \code{file_ext}, \code{file_info}, \code{cache_hash}, \code{cache_ext}, \code{cache_hash_file_name}, \code{cache_full_file_path}: \emph{Read-only}, auto-computed via getter methods—cannot be manually changed.
+}
+
+Use the class to inspect file characteristics, ensure reproducible caching, and track metadata for pipelines.
+
+See \code{warprrr} class documentation for property details and intended usage.
 }
 \description{
 Title

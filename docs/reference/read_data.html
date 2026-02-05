@@ -80,9 +80,20 @@ Arguments can be passed to these functions via this argument.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A named list of the form: list(data = data, warprrr = warprrr_class).
-warprrr class can be used to observe or use the properties of this instance
-of warprrr.</p>
+    <p>A named list:</p><dl><dt>data</dt>
+<dd><p>The loaded data frame.</p></dd>
+
+<dt>warprrr</dt>
+<dd><p>An S7 class instance containing file paths, caching info, file status,
+hash (for cache), and accessors to underlying properties.</p></dd>
+
+
+</dl><ul><li><p><strong><code>data</code></strong>: The data frame loaded from <code>data_path</code>, ready for analysis.</p></li>
+<li><p><strong><code>warprrr</code></strong>: S7 class with properties for inspecting file info, cache status, and managing caching.</p></li>
+</ul><p>The <code>warprrr</code> object exposes properties:</p><ul><li><p><code>data_path</code>, <code>read_fun_args</code>, <code>cache_path</code>: <em>Configurable</em> (can be set at creation)</p></li>
+<li><p><code>file_ext</code>, <code>file_info</code>, <code>cache_hash</code>, <code>cache_ext</code>, <code>cache_hash_file_name</code>, <code>cache_full_file_path</code>: <em>Read-only</em>, auto-computed via getter methods—cannot be manually changed.</p></li>
+</ul><p>Use the class to inspect file characteristics, ensure reproducible caching, and track metadata for pipelines.</p>
+<p>See <code>warprrr</code> class documentation for property details and intended usage.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

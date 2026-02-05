@@ -67,7 +67,7 @@ CSV, PSV, TSV, TXT, Parquet, Feather, SAS7BDAT, and XPT.</p></dd>
 <dt id="arg-read-fun-args">read_fun_args<a class="anchor" aria-label="anchor" href="#arg-read-fun-args"></a></dt>
 <dd><p>A named list of arguments passed to the underlying
 reader function. CSV, PSV, TSV, and TXT files are read using
-<code><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">data.table::fread()</a></code>. SAS7BDAT and XPT files are read using
+<code><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">data.table::fread()</a></code>. SAS7BDAT and XPT files are read using
 <code><a href="https://haven.tidyverse.org/reference/read_sas.html" class="external-link">haven::read_sas()</a></code> and <code><a href="https://haven.tidyverse.org/reference/read_xpt.html" class="external-link">haven::read_xpt()</a></code>, respectively.
 Parquet and Feather files are read using
 <code><a href="https://arrow.apache.org/docs/r/reference/read_parquet.html" class="external-link">arrow::read_parquet()</a></code> and <code><a href="https://arrow.apache.org/docs/r/reference/read_feather.html" class="external-link">arrow::read_feather()</a></code>.</p></dd>
@@ -77,6 +77,33 @@ Parquet and Feather files are read using
 <dd><p>Path to the cache directory.</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+
+<div class="section">
+<h3 id="warprrr-value-details">warprrr Value Details<a class="anchor" aria-label="anchor" href="#warprrr-value-details"></a></h3>
+
+
+<p>An S7 class with these properties:</p><ul><li><p><strong>Settable:</strong></p><ul><li><p><code>data_path</code>: File path</p></li>
+<li><p><code>read_fun_args</code>: List of extra reader args</p></li>
+<li><p><code>cache_path</code>: Path to cache directory</p></li>
+</ul></li>
+<li><p><strong>Auto-computed (read-only, cannot be set):</strong></p><ul><li><p><code>file_ext</code>: File extension (deduced from path)</p></li>
+<li><p><code>file_info</code>: File metadata (<code><a href="https://fs.r-lib.org/reference/file_info.html" class="external-link">fs::file_info</a></code>)</p></li>
+<li><p><code>cache_hash</code>: Hash (digest) calculated from filename, args, file meta</p></li>
+<li><p><code>cache_ext</code>: Always <code>.feather</code> (enforced)</p></li>
+<li><p><code>cache_hash_file_name</code>: Full cache filename (<code>{hash}.feather</code>)</p></li>
+<li><p><code>cache_full_file_path</code>: Absolute cache path</p></li>
+</ul></li>
+</ul><p>These metadata fields support fast cache querying, reliability in pipelines,
+and usage audits. Properties with getters (listed above) are <em>auto-calculated</em> and
+cannot be manually set.</p>
+<p>For cache control, supply a directory and inspect the <code>cache_full_file_path</code>
+property. All file format checks are enforced at construction, and the class
+supports future expansion of supported file types.</p>
+</div>
+
+    </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

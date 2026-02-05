@@ -120,7 +120,7 @@ XPT files and observing cache behavior.</p>
 <span></span>
 <span>  <span class="va">patient_ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"PT%06d"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_patients</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span>  <span class="va">patient_visits</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/J.html" class="external-link">CJ</a></span><span class="op">(</span></span>
+<span>  <span class="va">patient_visits</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/J.html" class="external-link">CJ</a></span><span class="op">(</span></span>
 <span>    PatientID <span class="op">=</span> <span class="va">patient_ids</span>,</span>
 <span>    VisitNumber <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">visits_per_patient</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
@@ -134,7 +134,7 @@ XPT files and observing cache behavior.</p>
 <span>    <span class="st">"Creatinine"</span>, <span class="st">"ALT"</span>, <span class="st">"AST"</span>, <span class="st">"BUN"</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span>  <span class="va">dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/J.html" class="external-link">CJ</a></span><span class="op">(</span></span>
+<span>  <span class="va">dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/J.html" class="external-link">CJ</a></span><span class="op">(</span></span>
 <span>    PatientID <span class="op">=</span> <span class="va">patient_visits</span><span class="op">$</span><span class="va">PatientID</span>,</span>
 <span>    VisitNumber <span class="op">=</span> <span class="va">patient_visits</span><span class="op">$</span><span class="va">VisitNumber</span>,</span>
 <span>    LabTest <span class="op">=</span> <span class="va">lab_tests</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">labs_per_visit</span><span class="op">)</span><span class="op">]</span></span>
@@ -142,7 +142,7 @@ XPT files and observing cache behavior.</p>
 <span></span>
 <span>  <span class="va">dt</span> <span class="op">&lt;-</span> <span class="va">patient_visits</span><span class="op">[</span><span class="va">dt</span>, on <span class="op">=</span> <span class="fu">.</span><span class="op">(</span><span class="va">PatientID</span>, <span class="va">VisitNumber</span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
-<span>  <span class="va">dt</span><span class="op">[</span>, <span class="va">LabValue</span> <span class="op">:=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fcase.html" class="external-link">fcase</a></span><span class="op">(</span></span>
+<span>  <span class="va">dt</span><span class="op">[</span>, <span class="va">LabValue</span> <span class="op">:=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fcase.html" class="external-link">fcase</a></span><span class="op">(</span></span>
 <span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"Glucose"</span>,      <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">.N</span>, <span class="fl">95</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"Hemoglobin"</span>,  <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">.N</span>, <span class="fl">14</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"WBC"</span>,         <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">.N</span>, <span class="fl">7.5</span>, <span class="fl">2.5</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>,</span>
@@ -153,7 +153,7 @@ XPT files and observing cache behavior.</p>
 <span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"BUN"</span>,         <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">.N</span>, <span class="fl">15</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span>  <span class="op">)</span><span class="op">]</span></span>
 <span></span>
-<span>  <span class="va">dt</span><span class="op">[</span>, <span class="va">Unit</span> <span class="op">:=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fcase.html" class="external-link">fcase</a></span><span class="op">(</span></span>
+<span>  <span class="va">dt</span><span class="op">[</span>, <span class="va">Unit</span> <span class="op">:=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fcase.html" class="external-link">fcase</a></span><span class="op">(</span></span>
 <span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"Glucose"</span>,      <span class="st">"mg/dL"</span>,</span>
 <span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"Hemoglobin"</span>,  <span class="st">"g/dL"</span>,</span>
 <span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"WBC"</span>,         <span class="st">"10^3/uL"</span>,</span>
@@ -163,7 +163,7 @@ XPT files and observing cache behavior.</p>
 <span>    <span class="va">LabTest</span> <span class="op">==</span> <span class="st">"BUN"</span>,         <span class="st">"mg/dL"</span></span>
 <span>  <span class="op">)</span><span class="op">]</span></span>
 <span></span>
-<span>  <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">dt</span>, <span class="va">PatientID</span>, <span class="va">VisitDate</span>, <span class="va">LabTest</span><span class="op">)</span></span>
+<span>  <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">dt</span>, <span class="va">PatientID</span>, <span class="va">VisitDate</span>, <span class="va">LabTest</span><span class="op">)</span></span>
 <span>  <span class="va">dt</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -233,7 +233,7 @@ XPT files and observing cache behavior.</p>
 <span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span></span>
 <span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
 <span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span>
-<span><span class="co">#&gt; Time taken to write a .sas7bdat file : 0.79 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; Time taken to write a .sas7bdat file : 0.80 secs</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu">haven</span><span class="fu">::</span><span class="fu"><a href="https://haven.tidyverse.org/reference/read_sas.html" class="external-link">read_sas</a></span><span class="op">(</span></span>
@@ -255,7 +255,7 @@ XPT files and observing cache behavior.</p>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"lab_data.xpt"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span>, message <span class="op">=</span> <span class="st">"read the same .xpt file directly"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Time taken to read the same .xpt file directly : 2.45 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; Time taken to read the same .xpt file directly : 2.50 secs</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="reading-with-warprrr">Reading with warprrr<a class="anchor" aria-label="anchor" href="#reading-with-warprrr"></a>
@@ -280,7 +280,7 @@ XPT files and observing cache behavior.</p>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"lab_data.xpt"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span>, message <span class="op">=</span> <span class="st">"read an XPT file with {warprrr} (initial read)"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Time taken to read an XPT file with {warprrr} (initial read) : 2.28 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; Time taken to read an XPT file with {warprrr} (initial read) : 2.29 secs</span></span></code></pre></div>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">time_code</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu">warprrr</span><span class="fu">::</span><span class="fu"><a href="../reference/read_data.html">read_data</a></span><span class="op">(</span></span>
